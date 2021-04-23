@@ -1,10 +1,7 @@
-# Laravel-Vue SPA 
+# Isnaad Project 
 
-<a href="https://github.com/cretueusebiu/laravel-vue-spa/actions"><img src="https://github.com/cretueusebiu/laravel-vue-spa/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/cretueusebiu/laravel-vue-spa"><img src="https://poser.pugx.org/cretueusebiu/laravel-vue-spa/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/cretueusebiu/laravel-vue-spa"><img src="https://poser.pugx.org/cretueusebiu/laravel-vue-spa/v/stable.svg" alt="Latest Stable Version"></a>
 
-> A Laravel-Vue SPA starter kit.
+> Isnaad Project.
 
 <p align="center">
 <img src="https://i.imgur.com/NHFTsGt.png">
@@ -22,13 +19,14 @@
 
 ## Installation
 
-- `composer create-project --prefer-dist cretueusebiu/laravel-vue-spa`
+- `composer install`
+- `cp .env.example .env`
 - Edit `.env` and set your database connection details
-- (When installed via git clone or download, run `php artisan key:generate` and `php artisan jwt:secret`)
+- `php artisan key:generate` and `php artisan jwt:secret`
 - `php artisan migrate`
 - `npm install`
 
-## Usage
+## Usage 
 
 #### Development
 
@@ -40,11 +38,13 @@ npm run watch
 npm run hot
 ```
 
-#### Production
+[comment]: <> (#### Production)
 
-```bash
-npm run production
-```
+[comment]: <> (```bash)
+
+[comment]: <> (npm run production)
+
+[comment]: <> (```)
 
 ## Socialite
 

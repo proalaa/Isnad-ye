@@ -1,0 +1,18 @@
+@import 'variables';
+@import '~bootstrap/scss/bootstrap';
+@import '~sweetalert2/src/sweetalert2';
+@import 'elements/card';
+@import "elements/header";
+@import 'elements/navbar';
+@import 'elements/buttons';
+@import 'elements/sidebar';
+@import 'elements/transitions';
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;600;700&display=swap');
+body {
+  font-family: 'Cairo', sans-serif;
+  //width: 98.8%;
+
+}
+
+/*start starter template*/
+
