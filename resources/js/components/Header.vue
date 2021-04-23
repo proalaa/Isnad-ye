@@ -1,0 +1,78 @@
+<template>
+  <div id="" class="upper-menu py-3 py-lg-0 ">
+    <div class="container-fluid row h-100 justify-content-between align-items-center">
+      <div class=" col my-auto text-right d-flex">
+        <img src="/images/humburgermenu.svg" class="hamburger-icon  d-inline-block" @click="toggleSidebar">
+        <div>
+          <h3 class="text-muted  mr-4 d-none d-md-inline">
+            {{ headerTitle }}
+          </h3>
+          <p>{{ headerDesc }}</p>
+        </div>
+      </div>
+      <div class=" col d-flex justify-content-end  align-items-center text-left">
+        <a href="" class=""><Fa icon="envelope" /> </a>
+        <a href="" class="mr-md-3 mr-2 position-relative"><Fa icon="bell" /><span class="dot">&nbsp;</span></a>
+        <a href="" role="button" class="btn btn-info rounded-pill d-none d-md-inline-flex align-items-center mr-md-5 py-2 mr-3"> <i class="fas fa-plus mr-3 ml-2 " /><span class="ml-3" @click.prevent="logout">{{ $t('logout') }} </span></a>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapActions } from 'vuex'
+
+export default {
+  name: 'Header',
+  props: ['title'],
+  data: () => ({
+
+  }),
+  computed: {
+    routeName () {
+      const { name } = this.$route
+      return name
+    },
+    headerTitle () {
+      return this.$t(this.routeName + '_page_title')
+    },
+    headerDesc () {
+      return this.$t(this.routeName + '_page_desc')
+    }
+  },
+  mounted () {
+    console.log(this.$route.meta.headerTitle)
+  },
+  methods: {
+    ...mapActions({
+      toggleSidebar: 'sidebar/toggleSidebar'
+    }),
+    async logout () {
+      // Log out the user.
+      await this.$store.dispatch('auth/logout')
+
+      // Redirect to login.
+      this.$router.push({ name: 'login' })
+    }
+  }
+}
+</script>
+
+  <style scoped lang="scss">
+  .slide-enter-active,
+  .slide-leave-active
+  {
+    transition: transform 0.4s ease;
+  }
+
+  .slide-enter,
+  .slide-leave-to {
+    transform: translateX(100%);
+    transition: all .4s ease-in 0s
+  }
+  .hamburger-icon
+  {
+    cursor: pointer;
+    display: none;
+  }
+  </style>

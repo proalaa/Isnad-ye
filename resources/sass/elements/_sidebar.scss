@@ -1,0 +1,82 @@
+/*Start sidebar*/
+@media screen and (max-width: 800px)  {
+
+  #sidebar
+  {
+    position: absolute ;
+    top: 0;
+    display: inline-block;
+    width: 100vw !important;
+    right: 0;
+    z-index: 99;
+    //right: -3000px;
+    transition: all 0.8s ease-in-out;
+    -o-transition: all 0.8s ease-in-out;
+    -webkit-transition: all 0.8s ease-in-out;
+    -moz-transition: all 0.8s ease-in-out;
+
+  }
+
+}
+
+#sidebar
+{
+  .logo
+  {
+    background-color: #21324e;
+
+    color: white;
+    text-align: center;
+    height: 60px;
+
+    /*padding: 20px;*/
+  }
+  width: 270px;
+  background-color: $primary;
+  height: 100vh;
+  /*padding: 0 4px;*/
+  /*margin-right: 7px;*/
+  a{
+    border: none;
+    transition: all .2s ease-in-out;
+    font-size: 15px;
+    margin: 10px 3px 10px 0;
+    padding:10px 10px;
+
+    &:hover{
+      border: none;
+      background-color: $primary-thick;
+      color: #ffffff !important;
+    }
+    svg{
+      color: #4e6489;
+    }
+  }
+}
+
+//.parent
+//{
+//  position: fixed ;
+//  bottom: 22px;
+//  right: 10px;
+//}
+//.add-icon
+//{
+//  position: relative !important;
+//  span{
+//    position: absolute;
+//    bottom: -36px;
+//    font-size: 10px;
+//    text-decoration: none;
+//    left: 2px;
+//    color: black;
+//    width: 100%;
+//  }
+//}
+//
+//.side-collapse
+//{
+//  height: 100%;
+//  right: 0px !important;
+//  overflow: auto;
+//}
