@@ -16,13 +16,13 @@
         <router-link to="account" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
           <Fa /><span class="align-self-start">حسابي</span>
         </router-link>
-        <router-link to="" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
+        <router-link to="orders" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
           <Fa /><span class="align-self-start">الطلبات</span>
         </router-link>
-        <router-link to="" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
+        <router-link to="entity" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
           <Fa /><span class="align-self-start">بروفايل المنشاة</span>
         </router-link>
-        <router-link to="" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
+        <router-link to="offers" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
           <Fa /><span class="align-self-start">العروض</span>
         </router-link>
       </div>
@@ -51,6 +51,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+a.active{
+
+}
 .slide-enter-active,
 .slide-leave-active
 {

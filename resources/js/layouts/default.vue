@@ -10,9 +10,7 @@
       </div>
       <!--      -->
       <div id="content" class="flex-grow-1">
-        <Header
-          :title="this.title"
-        />
+        <Header/>
         <!--      TODO
        isolate application child from another child ex:login child
        -->
@@ -38,7 +36,6 @@ export default {
     Sidebar
   },
   data: () => ({
-    headerTitle: 'hh'
   }),
   watch: {
     $route: {

@@ -1,4 +1,4 @@
-c<template>
+<template>
   <div class="main-layout">
     <navbar />
 

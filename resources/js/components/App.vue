@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :dir="pageDir">
     <loading ref="loading" />
 
     <transition name="page" mode="out-in">
@@ -10,7 +10,7 @@
 
 <script>
 import Loading from './Loading'
-
+import { mapGetters } from 'vuex'
 // Load layout components dynamically.
 const requireContext = require.context('~/layouts', false, /.*\.vue$/)
 
@@ -34,6 +34,14 @@ export default {
     layout: null,
     defaultLayout: 'default'
   }),
+  computed: {
+    ...mapGetters({
+      locale: 'lang/locale'
+    }),
+    pageDir () {
+      return this.locale == 'ar' ? 'rtl' : 'ltr'
+    }
+  },
 
   metaInfo () {
     const { appName } = window.config
@@ -43,7 +51,6 @@ export default {
       titleTemplate: `%s · ${appName}`
     }
   },
-
   mounted () {
     this.$loading = this.$refs.loading
   },

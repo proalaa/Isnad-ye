@@ -6,7 +6,7 @@
     position: absolute ;
     top: 0;
     display: inline-block;
-    width: 100vw !important;
+    width: 100% !important;
     right: 0;
     z-index: 99;
     //right: -3000px;
@@ -44,6 +44,12 @@
     padding:10px 10px;
 
     &:hover{
+      border: none;
+      background-color: $primary-thick;
+      color: #ffffff !important;
+    }
+    &.active
+    {
       border: none;
       background-color: $primary-thick;
       color: #ffffff !important;
