@@ -47,6 +47,7 @@ class OAuthTest extends TestCase
             'id' => '123',
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'role' => 1,
             'token' => 'access-token',
             'refreshToken' => 'refresh-token',
         ]);

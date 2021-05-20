@@ -7,6 +7,7 @@
 export default {
   name: 'Account',
   layout: 'default',
+  middleware: 'auth',
   mounted () {
     console.log(this.$route.meta.headerTitle)
   }

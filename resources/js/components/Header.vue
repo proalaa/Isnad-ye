@@ -13,7 +13,7 @@
       <div class=" col d-flex justify-content-end  align-items-center text-left">
         <a href="" class="ml-1"><Fa icon="envelope" /> </a>
         <a href="" class="mr-3 position-relative"><Fa icon="bell" /><span class="dot">&nbsp;</span></a>
-        <a href="" role="button" class="btn btn-info rounded-pill d-none d-md-inline-flex align-items-center mr-md-4 py-2 mr-3"> <i class="fas fa-plus mr-3 ml-2 " /><span class="ml-3" @click.prevent="logout">{{ $t('logout') }} </span></a>
+        <a href="" class="btn btn-info rounded-pill d-none d-md-inline-flex align-items-center mr-md-4 py-2 mr-3" @click.prevent="logout"> <i class="fas fa-plus mr-3 ml-2"  /><span class="ml-3" >{{ $t('logout') }} </span></a>
       </div>
     </div>
   </div>

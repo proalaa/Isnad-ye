@@ -45,6 +45,21 @@
           </div>
 
           <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-right">{{ $t('confirm_password') }}</label>
+            <div class="col-md-7">
+              <select v-model="form.role" :class="{ 'is-invalid': form.errors.has('role') }" class="form-control" name="role">
+                <option value="">
+                  {{ $t('choose') }}
+                </option>
+                <option v-for="uRole in userRoles" :key="uRole.val" :value="uRole.val">
+                  {{ uRole.label }}
+                </option>
+              </select>
+              <has-error :form="form" field="role" />
+            </div>
+          </div>
+
+          <div class="form-group row">
             <div class="col-md-7 offset-md-3 d-flex">
               <!-- Submit Button -->
               <v-button :loading="form.busy">
@@ -81,11 +96,16 @@ export default {
       name: '',
       email: '',
       password: '',
-      password_confirmation: ''
+      password_confirmation: '',
+      role: ''
     }),
     mustVerifyEmail: false
   }),
-
+  computed: {
+    userRoles () {
+      return [{ val: 1, label: this.$t('admin') }, { val: 2, label: this.$t('supplier') }, { val: 3, label: this.$t('facility') }]
+    }
+  },
   methods: {
     async register () {
       // Register the user.
