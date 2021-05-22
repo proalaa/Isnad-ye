@@ -11,10 +11,10 @@
         </button>
         <div class="clearfix d-lg-none" />
         <router-link to="home" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
-          <Fa /><span class="align-self-start">الرئيسية</span>
+          <Fa /><span class="align-self-start">{{ $t('home_page_title') }}</span>
         </router-link>
         <router-link to="account" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
-          <Fa /><span class="align-self-start">حسابي</span>
+          <Fa /><span class="align-self-start">{{$t('account_page_title')}}}</span>
         </router-link>
         <router-link to="orders" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
           <Fa /><span class="align-self-start">الطلبات</span>

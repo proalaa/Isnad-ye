@@ -45,5 +45,6 @@
   "verify_email_address": "لقد قمنا بارسال ايميل لك يحوي على رابط التحقق.",
   "admin": "حساب مدير",
   "facility": "مؤسسة طبية",
-  "supplier": "مؤرد"
+  "supplier": "مؤرد",
+  "register_as": "تسجيل كـ"
 }

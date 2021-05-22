@@ -45,7 +45,7 @@
           </div>
 
           <div class="form-group row">
-            <label class="col-md-3 col-form-label text-md-right">{{ $t('confirm_password') }}</label>
+            <label class="col-md-3 col-form-label text-md-right">{{ $t('register_as') }}</label>
             <div class="col-md-7">
               <select v-model="form.role" :class="{ 'is-invalid': form.errors.has('role') }" class="form-control" name="role">
                 <option value="">
