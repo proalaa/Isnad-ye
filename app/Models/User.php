@@ -55,6 +55,14 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         'photo_url',
     ];
 
+    public function order()
+    {
+        return $this->hasMany(Order::class);
+    }
+    public function Offer()
+    {
+        return $this->hasMany(Offer::class);
+    }
     /**
      * Get the profile photo URL attribute.
      *
