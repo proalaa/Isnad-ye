@@ -1,0 +1,7 @@
+language: php
+
+script:
+  - vendor/bin/phpunit --coverage-clover coverage.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash -t bfcd5c73-c9ed-465f-8c66-3a25b1cb9a30)
