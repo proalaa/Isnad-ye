@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->date('birth_date')->nullable();
             $table->string('phone_number')->nullable();
             $table->mediumText('address')->nullable();
-            $table->unsignedInteger('role');
+            $table->unsignedInteger('role')->default(0);
             $table->unsignedBigInteger('commercial_register_number')->nullable();
             $table->unsignedBigInteger('commercial_register_certificate')->nullable();
             $table->mediumText('licence')->nullable();

@@ -15,9 +15,10 @@ class RegisterTest extends TestCase
             'email' => 'test@test.app',
             'password' => 'secret',
             'password_confirmation' => 'secret',
+            'role' => 1
         ])
             ->assertSuccessful()
-            ->assertJsonStructure(['id', 'name', 'email']);
+            ->assertJsonStructure(['id', 'name', 'email' , 'role']);
     }
 
     /** @test */
@@ -30,6 +31,7 @@ class RegisterTest extends TestCase
             'email' => 'test@test.app',
             'password' => 'secret',
             'password_confirmation' => 'secret',
+            'role' => 1
         ])
             ->assertStatus(422)
             ->assertJsonValidationErrors(['email']);

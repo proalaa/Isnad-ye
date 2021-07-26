@@ -26,6 +26,7 @@ class RegisterTest extends DuskTestCase
                     'email' => 'test@test.app',
                     'password' => 'password',
                     'password_confirmation' => 'password',
+                    'role' => 1
                 ])
                 ->assertPageIs(Home::class);
         });
@@ -43,6 +44,7 @@ class RegisterTest extends DuskTestCase
                     'email' => $user->email,
                     'password' => 'password',
                     'password_confirmation' => 'password',
+                    'role' => 1
                 ])
                 ->assertSee('The email has already been taken.');
         });
