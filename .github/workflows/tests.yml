@@ -65,23 +65,6 @@ jobs:
       - name: Build client
         run: npm run production
 
-      - name: Upgrade Chrome driver
-        run: php artisan dusk:chrome-driver `/opt/google/chrome/chrome --version | cut -d " " -f3 | cut -d "." -f1`
-
-      - name: Start Chrome driver
-        run: ./vendor/laravel/dusk/bin/chromedriver-linux &
-
-      - name: Create database
-        run: touch database/dusk.sqlite
-
-      - name: Run Laravel server
-        run: php artisan serve &
-
-      - name: Run Dusk tests
-        env:
-          APP_URL: "http://127.0.0.1:8000"
-        run: php artisan dusk
-
       - name: Upload screenshots
         if: failure()
         uses: actions/upload-artifact@v2
