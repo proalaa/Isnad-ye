@@ -3,9 +3,6 @@
 
 > Isnaad Project.
 
-<p align="center">
-<img src="https://i.imgur.com/NHFTsGt.png">
-</p>
 
 ## Features
 
@@ -46,7 +43,7 @@ npm run hot
 
 [comment]: <> (```)
 
-## Socialite
+<!-- ## Socialite
 
 This project comes with GitHub as an example for [Laravel Socialite](https://laravel.com/docs/5.8/socialite).
 
@@ -72,4 +69,4 @@ php artisan dusk
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently. -->
