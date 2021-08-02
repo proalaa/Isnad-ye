@@ -28,13 +28,14 @@ class OrdersController extends Controller
         {
             return OrderResource::collection($orders->wherePivot('is_owner' , false)->get())->response();
         }
-        return  OrderResource::collection($orders->get())->response();
+        return  OrderResource::collection($orders->wherePivot('is_owner' , true)->get())->response();
 
 //        $orders = $user->orders->;
 //        return  OrderResource::collection($orders->paginate(20))->response(); //eager loading
 //        return new OrderResource($orders->);//eager loading
 //        $orders = Order::with('owner:id,name')->get(); //eager loading
     }
+
     public function getOthersOrders()
     {
 //        dd(User::Facility()->with('orders')->get());

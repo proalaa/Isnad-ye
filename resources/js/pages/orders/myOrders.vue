@@ -66,6 +66,7 @@ export default {
     {
        const {data} = await axios.get(`/api/orders/myorders/?simple=true&only_sharable=${~~only_sharable}`);
        if(only_sharable){
+         console.log(data);
          this.sharableOrders = data.data;
          return ;
        }
@@ -78,6 +79,7 @@ export default {
   created() {
     console.log('ff');
     this.fetchOrders();
+    this.fetchOrders(true);
     // this.allOrders = this.fetchOrders(false);
     // this.sharableOrders = this.fetchOrders(true);
   }

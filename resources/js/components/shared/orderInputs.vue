@@ -23,7 +23,7 @@
                 </thead>
                 <tbody>
                   <template v-if=isParticipatedComponent >
-                    <template v-for="(facilitiy , index) in form.more.facilities || [] " >
+                    <template v-if="form.more.products" v-for="(facilitiy , index) in form.more.facilities || [] " >
                       <tr class="" v-for="(item , index) in JSON.parse(facilitiy.pivot.products)" >
 
                         <td>{{index + 1}}</td>
