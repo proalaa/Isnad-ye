@@ -6,11 +6,10 @@ use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable,
         HasFactory;
@@ -62,11 +61,23 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         'photo_url',
     ];
 
-    public function order()
+    public function scopeFacility($query)
     {
-        return $this->hasMany(Order::class);
+        return $query->where('role' , 2);
     }
-    public function Offer()
+    public function scopeSupplier($query)
+    {
+        return $query->where('role' , 1);
+    }
+    public function Orders()
+    {
+        return $this->belongsToMany(Order::class , 'facility_order' , 'facility_id' , 'order_id')->withPivot('products' ,'is_owner', 'status' , 'voted_for');
+    }
+    public function MyOrders()
+    {
+        return $this->hasMany(Order::class , 'owner_id');
+    }
+    public function Offers()
     {
         return $this->hasMany(Offer::class);
     }

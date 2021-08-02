@@ -20,8 +20,10 @@ class ProfileController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$user->id,
+            'phone_number' => 'nullable|digits:9',
+            'commercial_register_number' => 'nullable|numeric|digits_between:5,12',
+            'birth_date' => 'nullable|date',
         ]);
-
-        return tap($user)->update($request->only('name', 'email'));
+        return tap($user)->update($request->all());
     }
 }

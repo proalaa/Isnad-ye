@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\OrderResource;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Dusk\DuskServiceProvider;
@@ -17,7 +18,9 @@ class AppServiceProvider extends ServiceProvider
     {
         if ($this->app->runningUnitTests()) {
             Schema::defaultStringLength(191);
+
         }
+//        OrderResource::withoutWrapping();
     }
 
     /**

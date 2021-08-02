@@ -103,7 +103,7 @@ export default {
   }),
   computed: {
     userRoles () {
-      return [{ val: 1, label: this.$t('admin') }, { val: 2, label: this.$t('supplier') }, { val: 3, label: this.$t('facility') }]
+      return [{ val: 0, label: this.$t('admin') }, { val: 1, label: this.$t('supplier') }, { val: 2, label: this.$t('facility') }]
     }
   },
   methods: {

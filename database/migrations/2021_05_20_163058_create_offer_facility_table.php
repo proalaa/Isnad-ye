@@ -13,6 +13,7 @@ class CreateOfferFacilityTable extends Migration
      */
     public function up()
     {
+        //Voting Table
         Schema::create('offer_facility', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('facility_id');

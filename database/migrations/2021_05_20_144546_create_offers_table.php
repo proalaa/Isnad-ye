@@ -19,9 +19,9 @@ class CreateOffersTable extends Migration
             $table->unsignedBigInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('users');
             $table->longText('details')->nullable();
-            $table->boolean('is_reviewed')->default(false);
             $table->dateTime('end_date')->nullable();
             $table->string('status')->nullable();
+            $table->boolean('is_reviewed')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

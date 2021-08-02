@@ -1,5 +1,5 @@
 <template>
-  <button :type="nativeType" :disabled="loading" :class="{
+  <button role="button" @click="GoTo()" :type="nativeType" :disabled="loading" :class="{
     [`btn-${type}`]: true,
     'btn-block': block,
     'btn-lg': large,
@@ -19,7 +19,10 @@ export default {
       type: String,
       default: 'primary'
     },
-
+    link: {
+      type:URL,
+      default:''
+    },
     nativeType: {
       type: String,
       default: 'submit'
@@ -38,6 +41,15 @@ export default {
     large: {
       type: Boolean,
       default: false
+    }
+  },
+  methods:{
+    GoTo(){
+      if(this.link)
+      {
+        console.log('fff');
+        this.$router.push(this.link);
+      }
     }
   }
 }

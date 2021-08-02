@@ -12,12 +12,24 @@ class Order extends Model
 
     protected $guarded = [];
 
-    public function Orginal_Order()
+    protected $dates = ['shareable_until' , 'open_until' , 'votable_until'];
+
+
+//    public function Orginal_Order()
+//    {
+//        return $this->hasOne(Order::class);
+//    }
+    public function Facilities()
     {
-        return $this->hasOne(Order::class);
+        return $this->belongsToMany(User::class , 'facility_order' , 'order_id' , 'facility_id')->withPivot('products','is_owner', 'status' , 'voted_for');
     }
-    public function User()
+    public function Owner()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class , 'owner_id' );
+//        return $this->belongsToMany(User::class , 'facility_order' , 'order_id' , 'owner_id')->withPivot('products','is_owner','owner_id' , 'status' , 'voted_for');
+    }
+    public function Offers()
+    {
+        $this->hasMany(Offer::class);
     }
 }

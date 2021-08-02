@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class OAuthProvider extends Model
 {
     /**
-     * The table associated with the model.
+     * The table associated with the model.Orginal_Order
      *
      * @var string
      */

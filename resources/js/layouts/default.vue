@@ -40,9 +40,7 @@ export default {
   watch: {
     $route: {
       handler: (to, from) => {
-        console.log(to.meta.headerTitle);
         window.headerTitle = to.meta.headerTitle
-        console.log(Window.headerTitle)
       }
     }
   }

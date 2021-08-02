@@ -10,21 +10,38 @@
           &times;
         </button>
         <div class="clearfix d-lg-none" />
-        <router-link to="home" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
-          <Fa /><span class="align-self-start">{{ $t('home_page_title') }}</span>
+        <router-link to="/home" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
+          <Fa icon="home" /><span class="align-self-start">{{ $t('home_page_title') }}</span>
         </router-link>
-        <router-link to="account" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
-          <Fa /><span class="align-self-start">{{$t('account_page_title')}}}</span>
+        <router-link to="/profile" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
+          <Fa icon="id-badge" /><span class="align-self-start">{{$t('profile_page_title')}}</span>
         </router-link>
-        <router-link to="orders" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
-          <Fa /><span class="align-self-start">الطلبات</span>
-        </router-link>
-        <router-link to="entity" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
-          <Fa /><span class="align-self-start">بروفايل المنشاة</span>
-        </router-link>
-        <router-link to="offers" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
-          <Fa /><span class="align-self-start">العروض</span>
-        </router-link>
+    <!--  entity routes    -->
+        <template v-if="user.role == 2">
+
+          <a href="#orders-route-items" data-toggle="collapse" @click.prevent="" role="button" class="btn rounded-pill text-light d-flex flex-row align-items-center justify-content-start ">
+            <Fa icon="shopping-cart"/>
+            الطلبات
+          </a>
+            <ul id="orders-route-items" class="collapse">
+              <li class="list-unstyled"><router-link to="/orders/myorders" exact tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">طلباتي</router-link></li>
+              <li class="list-unstyled"><router-link to="/orders/published" exact tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">مشاركة في طلب</router-link></li>
+              <li class="list-unstyled"><router-link to="/orders/new" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">إنشاء طلب جديد</router-link></li>
+            </ul>
+
+
+        </template>
+    <!--  facility routes  -->
+        <template v-if="user.role == 1">
+          <a href="#offers-route-items" data-toggle="collapse" @click.prevent="" role="button" class="btn rounded-pill text-light d-flex flex-row align-items-center justify-content-start ">
+            <Fa icon="box-open"/>
+            العروض
+          </a>
+          <ul id="offers-route-items" class="collapse">
+            <li class="list-unstyled"><router-link to="/offers" exact tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">عروضي</router-link></li>
+            <li class="list-unstyled"><router-link to="/offers/new" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">إنشاء عرض جديد</router-link></li>
+          </ul>
+        </template>
       </div>
     </div>
   </transition>
@@ -37,10 +54,9 @@ export default {
   data: () => ({
   }),
   computed: {
-    ...mapGetters({ isSidebarOpen: 'sidebar/isSidebarOpen' })
+    ...mapGetters({ isSidebarOpen: 'sidebar/isSidebarOpen' , user : 'auth/user'})
   },
   mounted () {
-    console.log(this.isSidebarOpen)
   },
   methods: {
     ...mapActions({
@@ -68,5 +84,14 @@ a.active{
 .top-side
 {
   height: 100px;
+}
+a{
+  color: white;
+  font-size: 15px !important;
+  font-weight: 700;
+}
+a svg{
+  margin-left: 10px;
+  color: white !important;
 }
 </style>

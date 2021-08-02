@@ -48,7 +48,8 @@ export default {
     form: new Form({
       name: '',
       email: ''
-    })
+    },
+    {})
   }),
 
   computed: mapGetters({
