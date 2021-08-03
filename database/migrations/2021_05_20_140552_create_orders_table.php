@@ -26,7 +26,7 @@ class CreateOrdersTable extends Migration
             $table->dateTime('open_until')->nullable();
             $table->foreignId('owner_id')->references('id')->on('users');
             $table->dateTime('votable_until')->nullable();
-            $table->string('status')->nullable();
+            $table->enum('status' ,[0,1,2,3,4,5])->default(1)->nullable();
             $table->boolean('is_reviewed')->default(false);
             $table->softDeletes();
             $table->timestamps();

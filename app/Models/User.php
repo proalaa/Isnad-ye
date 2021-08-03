@@ -71,7 +71,7 @@ class User extends Authenticatable implements JWTSubject
     }
     public function Orders()
     {
-        return $this->belongsToMany(Order::class , 'facility_order' , 'facility_id' , 'order_id')->withPivot('products' ,'is_owner', 'status' , 'voted_for');
+        return $this->belongsToMany(Order::class , 'facility_order' , 'facility_id' , 'order_id')->using(FacilityOrder::class)->withPivot('products' ,'is_owner', 'status' , 'voted_for');
     }
     public function MyOrders()
     {

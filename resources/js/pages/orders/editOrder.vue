@@ -36,9 +36,9 @@
                   icon:'success',
                   // backdrop: `
                   //   rgba(0,0,123,0.4)
-                  //   // url("/images/fireWork.gif")
-                  //   // left top
-                  //   // no-repeat
+                  //   url("/images/fireWork.gif")
+                  //   left top
+                  //   no-repeat
                   // `
               })
           })
@@ -63,9 +63,8 @@
       created() {
 
           let self = this;
-          axios.get(`/api/orders/${this.$route.params.id}?simple`).then((result ) =>{
-          self.form= new Form(result.data.data);
-          console.log(this.form.s)
+          axios.get(`/api/orders/${this.$route.params.id}?simple`).then(({data} ) =>{
+          self.form= new Form(data);
           this.form.post_duration =this.diffTime(this.form.shareable_until , this.form.created_at);
           this.form.open_duration  =this.diffTime(this.form.open_until , this.form.shareable_until);
           this.form.vote_duration =this.diffTime(this.form.votable_until , this.form.open_until);

@@ -21,7 +21,7 @@ class Order extends Model
 //    }
     public function Facilities()
     {
-        return $this->belongsToMany(User::class , 'facility_order' , 'order_id' , 'facility_id')->withPivot('products','is_owner', 'status' , 'voted_for');
+        return $this->belongsToMany(User::class , 'facility_order' , 'order_id' , 'facility_id')->using(FacilityOrder::class)->withPivot('products','is_owner', 'status' , 'voted_for');
     }
     public function Owner()
     {
@@ -32,4 +32,6 @@ class Order extends Model
     {
         $this->hasMany(Offer::class);
     }
+
+
 }

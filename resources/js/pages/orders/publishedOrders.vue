@@ -7,7 +7,8 @@
 
 
       <card>
-        <table class=" table parent-table  table-borderless" >
+        <no-items v-if="!publishedOrders.length"/>
+        <table class=" table parent-table  table-borderless" v-if="publishedOrders.length" >
           <thead class="text-center">
           <tr>
             <td v-for="(th ,index) in ths" :key="index" >
@@ -69,7 +70,7 @@
                                                 <th>وصف</th>
                                                 </thead>
                                                 <tbody>
-                                                <tr class="text-center" v-for="(product, index) in  JSON.parse(facility.pivot.products)" >
+                                                <tr class="text-center" v-for="(product, index) in  facility.pivot.products" >
                                                   <td>{{ index + 1 }}</td>
                                                   <td>{{product.name}}</td>
                                                   <td>{{product.unit}}</td>
@@ -129,12 +130,13 @@ import IsnadTable from "../../components/shared/IsnadTable";
 import ClassificationBar from "../../components/shared/ClassificationBar";
 import axios from "axios";
 import VButton from "../../components/Button";
+import NoItems from "../../components/shared/noItems";
 export default {
   name: "publishedOrders",
-  components: {VButton, ClassificationBar, IsnadTable},
+  components: {NoItems, VButton, ClassificationBar, IsnadTable},
   data:()=>({
     ths:['order_id', 'start_date' , 'end_date' , 'vote_date' , 'participants_count'  , 'actions'],
-    publishedOrders:[]
+    publishedOrders:''
   }
   ),
   methods:{
@@ -142,7 +144,7 @@ export default {
     {
       const {data} = await axios.get(`/api/orders/otherorders`);
       console.log(data);
-      this.publishedOrders = data.data;
+      this.publishedOrders = data;
     }
   },
   created() {

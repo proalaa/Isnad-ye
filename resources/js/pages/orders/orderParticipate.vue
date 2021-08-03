@@ -50,11 +50,11 @@ export default {
   ,
   created() {
     let self = this;
-    axios.get(`/api/orders/shared/${this.$route.params.id}`).then((result) =>{
-      const data = result.data.data;
-      data.products = [{ name:null , unit:null ,quantity:null , description:null }];
-      self.form= new Form(data);
-
+    axios.get(`/api/orders/shared/${this.$route.params.id}`).then(({data}) =>{
+      const result = data;
+      result.products = [{ name:null , unit:null ,quantity:null , description:null }];
+      self.form= new Form(result);
+      console.log('fff');
     }).catch(e =>{
       console.log(e.message)
     });

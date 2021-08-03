@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
@@ -35,12 +36,13 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('settings/cities' , [LocationController::class , 'listCitiesForCountry']);
     Route::post('orders/create' , [OrdersController::class, 'create']);
     Route::get('orders/{order}' , [OrdersController::class , 'edit'])->where('order' , '[0-9]+');;
-    Route::get('orders/myorders/' , [OrdersController::class, 'getMyOrders']);
+    Route::get('orders/myorders' , [OrdersController::class, 'getMyOrders']);
     Route::get('orders/otherorders' , [OrdersController::class, 'getOthersOrders']);
     Route::patch('orders/{order}' , [OrdersController::class , 'store'])->where('order' , '[0-9]+');
     Route::delete('orders/{order}' , [OrdersController::class , 'destroy'])->where('order' , '[0-9]+');
     Route::get('orders/shared/{order}' , [OrdersController::class , 'participate'])->where('id' , '[0-9]+');
     Route::patch('orders/shared/{order}' , [OrdersController::class , 'storeParticipation'])->where('order' , '[0-9]+');
+    Route::get('offers/orders' , [OfferController::class , 'getAvailableOrders']);
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

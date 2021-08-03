@@ -24,7 +24,7 @@
                 <tbody>
                   <template v-if=isParticipatedComponent >
                     <template v-if="form.more.products" v-for="(facilitiy , index) in form.more.facilities || [] " >
-                      <tr class="" v-for="(item , index) in JSON.parse(facilitiy.pivot.products)" >
+                      <tr class="" v-for="(item , index) in facilitiy.pivot.products" >
 
                         <td>{{index + 1}}</td>
                         <td>{{item.name}}</td>
@@ -100,7 +100,7 @@
                   <span>ايام</span>
                 </div>
               </div>
-              <div class="col-sm-12 col-md">
+              <div class="col-sm-12 col-md" v-if="form.is_shareable">
                 <p>مدة التصويت</p>
                 <div class="d-flex align-items-center">
                   <input type="number" min="0" :class="{ 'is-invalid': form.errors.has('post_duration') }" class="form-control ml-2" v-model="form.vote_duration">
@@ -190,8 +190,9 @@ export default {
 
 
     handleProcess(){
-      if(this.form.is_sharable)
-        this.post.form.duration = null;
+      // if(!this.form.is_shareable)
+      //   this.form.post_duration = null;
+      //
       this.$emit('submit');
     },
 

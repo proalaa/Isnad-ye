@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class OrdersController extends Controller
@@ -38,30 +39,46 @@ class OrdersController extends Controller
 
     public function getOthersOrders()
     {
-//        dd(User::Facility()->with('orders')->get());
-//        dd(Order::with('facilities')->whereHas('facilities', function ($query) {
-//            return $query->pivot;
-//        })->get());
+//        $facilities = User::Facility()->with('Orders')->whereHas('Orders' ,function ($q){
+//            $q->where('is_shareable' , true);
+//        })->get();
+//        $orders = Order::with('Facilities:id')
 
-////        return User::Facility()->with('orders')->get();
-//        $otherFacilities = User::Facility()->get()->where('id' , '!=',Auth::id());
-//
-//        $otherFacilities->load('orders');
-//        return ;
-//        foreach ($otherFacilities as $facility)
-//        {
-//            foreach ($facility->orders as $order)
-//            {
-//                dd($order->pivot->products);
-//            }
-//
-//        }
-//        $otherFacilities = User::Facility()->where('id' , '!=',Auth::id());
-//        $otherFacilities;
-//        return $otherFacilities;
-        $orders = Order::with('facilities:id,name')->where('owner_id', '!=', Auth::id());
+//        return Order::With('Facilities:id')->get()->each(function($order){
+//            $order->facilities->map(function($facility){
+//                $facility->products = $facility->pivot->products;
+//                unset($facility->pivot);
+//                return $facility;
+//            });
+//        });
 
+
+
+       $facilities = Order::whereHas('Facilities' , function ($q){
+            $q->Where('users.id'  , Auth::id());
+        })->pluck('id');
+       $orders = Order::with('Facilities')->where('is_shareable' , true)->whereNotIn('id',$facilities);
         return OrderResource::collection($orders->get())->response();
+
+//        $facilty_orders = DB::table('facility_order')->where('facility_id' ,'!=' ,Auth::id())->pluck('order_id');
+//         $orders = Order::whereIn('id' , $facilty_orders)->where('is_shareable' , true)->get();
+//        dd(Order::all());
+//        $attributes = Order::with('facilities')->whereHas('facilities', function ($query) {
+//            $query->where('pivot.facility_id', true);
+//        })->get();
+
+        return $facilities;
+
+//        dd($attributes);
+//        return $attributes;
+//         $orders = Order::where('is_shareable' , true)->whereHas('facilities' , function ($q){
+//             return $q->where('facilities.id' , Auth::id());
+//         })->get();
+//            return $orders;
+//        return $orders;
+//        $orders = Order::with('facilities:id,name')->where('owner_id', '!=', Auth::id());
+//
+//        return OrderResource::collection($orders->get())->response();
     }
     public function create(OrdersRequest $request)
     {
@@ -116,7 +133,6 @@ class OrdersController extends Controller
             $order = Order::find($request->input('id'));
 
             $fff = Auth::user()->Orders()->attach($order,['is_owner' => false , 'products' => json_encode($request->get('products'))] );
-            dd($fff);
         }
         catch (Exception $exception)
         {

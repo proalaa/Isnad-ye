@@ -1,6 +1,7 @@
 <template>
   <card>
-    <table class=" table parent-table  table-borderless" >
+    <no-items v-if="!items.length"/>
+    <table class=" table parent-table  table-borderless" v-if="items.length">
       <thead class="text-center">
       <tr>
         <td v-for="(th ,index) in ths" :key="index" >
@@ -83,9 +84,10 @@ import IsnadButton from "./IsnadButton";
 import VButton from "../Button";
 import axios from "axios";
 import Swal from "sweetalert2";
+import NoItems from "./noItems";
 export default {
   name: "isnadTable",
-  components: {VButton, IsnadButton},
+  components: {NoItems, VButton, IsnadButton},
   props:{
     ths:{
       type:Array,
