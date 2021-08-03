@@ -23,6 +23,8 @@ class OrdersController extends Controller
     {
         $user = Auth::user();
 
+///from abdulllah branch
+
         $orders = $user->Orders()->with('facilities:id,name');
         if($request->exists('only_sharable') &&  $request->input('only_sharable'))
         {
