@@ -15,7 +15,12 @@
 - Bootstrap 4 + Font Awesome 5
 
 ## Installation
+1-download the project
+-  open any termainal you have ex:(cmd , gitbash , powershell)
+- `git clone https://github.com/proalaa/Isnad-ye.git`
+-  go to project directory -> `cd Isnad-ye`
 
+2- follow these steps after the project is downloaded
 - `composer install`
 - `cp .env.example .env`
 - Edit `.env` and set your database connection details
@@ -31,8 +36,6 @@
 # Build and watch
 npm run watch
 
-# Serve with hot reloading (not working)
-npm run hot
 ```
 
 [comment]: <> (#### Production)
@@ -63,10 +66,11 @@ To enable email verification make sure that your `App\User` model implements the
 # Run unit and feature tests
 vendor/bin/phpunit
 
-# Run Dusk browser tests
-php artisan dusk
-```
 
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently. -->
+
+## Contributors
+- [**Aladdin Mohammed** - *The main maintainer of this project*](https://github.com/proalaa)
+
