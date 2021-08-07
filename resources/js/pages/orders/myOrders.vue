@@ -15,7 +15,7 @@
         </div>
         <div class="tab-content" id="pills-tabContent">
           <div class="tab-pane fade show active" id="pills-my_orders" role="tabpanel" aria-labelledby="pills-my_orders-tab">
-            <isnad-table  :ths="ths" :items="allOrders" :is-for-participate="false" />
+            <isnad-table  :ths="ths" :items="allOrders" :is-for-participate="false" @updateView="fetchOrders" />
           </div>
           <div class="tab-pane fade" id="pills-shared_order" role="tabpanel" aria-labelledby="pills-shared_order-tab">
             <isnad-table :ths="ths" :items="sharableOrders" :is-for-participate="false" />
@@ -23,12 +23,6 @@
         </div>
       </div>
 </div>
-
-<!--    <isnad-button class="my-3" :link="'/orders/new'">-->
-<!--      <fa icon="plus" fixed-width />      اضافة طلب جديد-->
-<!--    </isnad-button>-->
-
-<!--  </div>-->
 </template>
 
 <script>
@@ -37,6 +31,7 @@ import IsnadTable from "../../components/shared/IsnadTable";
 import IsnadButton from "../../components/shared/IsnadButton";
 import axios from "axios";
 import Card from "../../components/Card";
+import Swal from "sweetalert2";
 export default {
   name: "myOrders",
   components:{
@@ -56,7 +51,7 @@ export default {
       {id: 3 , title: 'قيد التصويت' , count : 2 , active:false},
       {id: 4 , title: 'اشتقبال العروض' , count : 10 , active:false}
     ],
-    ths:['order_id', 'start_date' , 'publish_date' , 'vote_date' , 'participants_count' , 'status' , 'actions'],
+    ths:['order_id', 'share_duration' , 'open_duration' , 'vote_duration' , 'participants_count' , 'status' , 'actions'],
     allOrders:[],
     sharableOrders:[]
 
@@ -66,18 +61,17 @@ export default {
     {
        const {data} = await axios.get(`/api/orders/myorders/?simple=true&only_sharable=${~~only_sharable}`);
        if(only_sharable){
-         console.log(data);
          this.sharableOrders = data;
          return ;
        }
        this.allOrders = data;
-    }
+    },
   },
+
   computed:{
 
   },
   created() {
-    console.log('ff');
     this.fetchOrders();
     this.fetchOrders(true);
     // this.allOrders = this.fetchOrders(false);

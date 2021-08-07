@@ -8,7 +8,7 @@
           </div>
         </div>
         <div class="card-body">
-          <form action="" @submit.prevent="handleProcess">
+          <form action="">
             <div>
               <table class="table table-borderless">
                 <thead>
@@ -107,8 +107,9 @@
                   <span>ايام</span>
                 </div>
               </div>
-              <div class="col-sm-12 d-flex  col-md" style="margin-top: 20px">
-                <v-button type="success" :loading="form.busy" style="min-width: 100px; border-radius: 10px">حفظ ونشر</v-button>
+              <div class="col-sm-12 d-flex  col-md-3" style="margin-top: 20px">
+                <button class="btn btn-primary" :loading="form.busy" style="min-width: 100px; border-radius: 10px" @click.prevent="handleProcess(1)">حفظ كمسودة</button>
+                <button class="btn btn-success" :loading="form.busy" style="margin-inline-start: 10px ;min-width: 100px; border-radius: 10px" @click.prevent="handleProcess(0)">حفظ ونشر</button>
                 <button class="btn btn-danger px-2" type="button" style="min-width: 100px;margin-inline-start: 15px;border-radius: 10px" @click="goBack">الغاء</button>
               </div>
             </div>
@@ -189,12 +190,17 @@ export default {
     },
 
 
-    handleProcess(){
-      // if(!this.form.is_shareable)
-      //   this.form.post_duration = null;
-      //
-      this.$emit('submit');
+    handleProcess(save_as_draft){
+      this.$emit('submit' , save_as_draft);
     },
+    // watch:{
+    //   'this.form.is_shareable':{
+    //     handler(){
+    //
+    //     },
+    //     deep
+    //   }
+    // }
 
   },
 created() {
@@ -205,7 +211,6 @@ created() {
   mounted() {
 
     // console.log(this.getIndex);
-    console.log('ff');
     if(this.isEditComponent)
     {
       let data = this.orderData.data;

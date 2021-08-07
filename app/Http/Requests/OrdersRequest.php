@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class OrdersRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class OrdersRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -27,11 +28,12 @@ class OrdersRequest extends FormRequest
             'is_shareable' => 'sometimes|required|boolean',
             'post_duration' => 'sometimes|nullable|required_if:is_shareable,1|numeric|min:1', //required only if is_sharable is true
             'open_duration' => 'sometimes|required|nullable|numeric|min:1',
-            'vote_duration' => 'sometimes|required|nullable|numeric|min:1',
+            'vote_duration' => 'sometimes|nullable|required_if:is_shareable,1|numeric|min:1',
             'products.*.name' => 'required|string',
             'products.*.unit' => 'required',
-            'products.*.quantity' => 'required|numeric',
+            'products.*.quantity' => 'required|numeric|min:0',
             'products.*.description' => 'nullable|string',
+            'save_as_draft' => 'sometimes|required|boolean'
         ];
     }
 }

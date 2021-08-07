@@ -11,3 +11,8 @@ export const SET_LOCALE = 'SET_LOCALE'
 
 //
 export const TOGGLE_SIDEBAR = 'SIDEBAR_TOGGLE'
+
+export const FETCH_ORDERS = 'FETCH_ORDERS'
+export const FETCH_OFFERS = 'FETCH_OFFERS'
+export const CURRENT_OFFER = 'CURRENT_OFFER'
+export const CURRENT_ORDER = 'CURRENT_ORDER'

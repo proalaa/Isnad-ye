@@ -15,19 +15,16 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-//            $table->unsignedBigInteger('facility_id');
-//            $table->foreign('facility_id')->references('id')->on('users');
-//            $table->unsignedBigInteger('original_order_id')->nullable();
-//            $table->foreign('original_order_id')->references('id')->on('orders');
-            $table->dateTime('endDate')->nullable();
-            $table->longText('details')->nullable();
             $table->boolean('is_shareable')->default(false);
-            $table->dateTime('shareable_until')->nullable();
-            $table->dateTime('open_until')->nullable();
+            $table->integer('share_duration')->nullable();
+            $table->integer('open_duration')->nullable();
+            $table->integer('vote_duration')->nullable();
             $table->foreignId('owner_id')->references('id')->on('users');
             $table->dateTime('votable_until')->nullable();
             $table->enum('status' ,[0,1,2,3,4,5])->default(1)->nullable();
             $table->boolean('is_reviewed')->default(false);
+            $table->longText('details')->nullable();
+            $table->timestamp('posted_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -23,14 +23,19 @@ export default {
     return { title: this.$t('orders') }
   },
   methods:{
-    createOrder()
+    createOrder(save_as_draft)
     {
-      console.log('ddd');
-      this.form.post('/api/orders/create').then(async  ({data}) =>{
+      if(!this.form.is_shareable)
+      {
+        this.form.post_duration = this.form.vote_duration = null;
+      }
+
+      this.form.post(`/api/orders/create?save_as_draft=${save_as_draft || 0}`).then(async  ({data}) =>{
         this.$router.push('/orders');
       }).catch(e =>{
         console.log(e.message);
       });
+      return false;
     },
     cancelForm()
     {

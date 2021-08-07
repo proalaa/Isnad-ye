@@ -20,10 +20,11 @@ export default [
   { path: '/orders/:id/edit' , name:'edit_order', component:page('orders/editOrder')},
   { path: '/orders/published' , name: 'published_orders' , component:page('orders/publishedOrders')},
   { path: '/orders/published/:id' , name: 'order_participate' , component:page('orders/orderParticipate')},
-  { path: '/orders/:id/offers' , name:'order_offers' , component:page('offers/offersToEntity')},
-  { path: '/offers' , name:'facility_offers' , component:page('offers/facilityOffers')},
-  { path: '/offers/new' , name:'new_offers' , component:page('offers/newOffer')},
-  { path: '/offers/:id/edit' , name:'order_offers' , component:page('offers/editOffer')},
+  { path: '/orders/:id/offers' , name:'order_offers' , component:page('orders/orderOffers')},
+  { path: '/offers' , name:'my_offers' , component:page('offers/myOffers')},
+  { path: '/offers/orders' , name:'facility_offers' , component:page('offers/facilityOffers')},
+  { path: '/offers/create' , name:'new_offers' , component:page('offers/newOffer')},
+  { path: '/offers/:id/edit' , name:'edit_offer' , component:page('offers/editOffer')},
 
   // {path: '/orr' , name:'fff' , component:page('orders/myOrders.vue')},
   {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,16 +13,41 @@ class Order extends Model
 
     protected $guarded = [];
 
-    protected $dates = ['shareable_until' , 'open_until' , 'votable_until'];
+    protected $dates = ['posted_at' , 'share_end_at','offering_end_at' , 'vote_end_at'];
 
+    protected $casts=[
+        'products' => 'array'
+    ];
+    protected $appends=[
+        'share_end_at','offering_end_at' , 'vote_end_at'
+    ];
 
+    public function getShareEndAtAttribute(){
+        return Carbon::parse($this->posted_at)->addDays($this->share_duration)->format('Y-m-d H:i:s');
+    }
+    public function getOfferingEndAtAttribute(){
+        return  Carbon::parse($this->posted_at)->addDays($this->share_duration ?? 0)->addDays($this->open_duration)->format('Y-m-d H:i:s');
+    }
+    public function getVoteEndAtAttribute(){
+        return  Carbon::parse($this->posted_at)->addDays($this->share_duration ?? 0)
+            ->addDays($this->open_duration)->addDays($this->vote_duration ?? 0)->format('Y-m-d H:i:s');
+    }
 //    public function Orginal_Order()
 //    {
 //        return $this->hasOne(Order::class);
 //    }
+
+    public function FacilityOrder()
+    {
+        return $this->hasMany(FacilityOrder::class, 'order_id', 'id');
+    }
     public function Facilities()
     {
-        return $this->belongsToMany(User::class , 'facility_order' , 'order_id' , 'facility_id')->using(FacilityOrder::class)->withPivot('products','is_owner', 'status' , 'voted_for');
+
+        return $this->belongsToMany(User::class , 'facility_order' , 'order_id' , 'facility_id')
+            ->using(FacilityOrder::class)
+            ->withPivot('products','is_owner', 'status' , 'voted_for')
+            ->select('users.*' , 'facility_order.products as products');
     }
     public function Owner()
     {
@@ -30,7 +56,7 @@ class Order extends Model
     }
     public function Offers()
     {
-        $this->hasMany(Offer::class);
+        return$this->hasMany(Offer::class , 'order_id' , 'id');
     }
 
 

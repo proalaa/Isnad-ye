@@ -50,6 +50,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'products' => 'array'
     ];
 
     /**
@@ -71,7 +72,11 @@ class User extends Authenticatable implements JWTSubject
     }
     public function Orders()
     {
-        return $this->belongsToMany(Order::class , 'facility_order' , 'facility_id' , 'order_id')->using(FacilityOrder::class)->withPivot('products' ,'is_owner', 'status' , 'voted_for');
+
+        return $this->belongsToMany(Order::class , 'facility_order' , 'facility_id' , 'order_id')
+            ->using(FacilityOrder::class)
+            ->withPivot('products' ,'is_owner', 'status' , 'voted_for')
+            ->select('orders.*' , 'facility_order.products as products');
     }
     public function MyOrders()
     {
@@ -79,8 +84,10 @@ class User extends Authenticatable implements JWTSubject
     }
     public function Offers()
     {
-        return $this->hasMany(Offer::class);
+        return $this->hasMany(Offer::class , 'supplier_id');
     }
+
+
     /**
      * Get the profile photo URL attribute.
      *

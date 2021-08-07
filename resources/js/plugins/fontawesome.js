@@ -15,7 +15,16 @@ import {
   faPlus,
   faPencilAlt,
   faTrashAlt,
-  faChevronDown, faHome, faIdBadge, faShoppingCart, faBuilding, faFileUpload, faPen, faSearch, faBoxOpen
+  faChevronDown,
+  faHome,
+  faIdBadge,
+  faShoppingCart,
+  faBuilding,
+  faFileUpload,
+  faPen,
+  faSearch,
+  faBoxOpen,
+  faQuestionCircle, faCheck
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -23,7 +32,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
-  faUser, faLock, faSignOutAlt, faCog, faGithub, faUserSecret , faEnvelope , faBell , faPlus, faPencilAlt, faTrashAlt,faChevronDown ,faHome , faIdBadge ,faShoppingCart , faBuilding,faFileUpload,faPen,faSearch,faBoxOpen
+  faUser, faLock, faSignOutAlt, faCog, faGithub, faUserSecret , faEnvelope , faBell , faPlus, faPencilAlt, faTrashAlt,faChevronDown ,faHome , faIdBadge ,faShoppingCart , faBuilding,faFileUpload,faPen,faSearch,faBoxOpen,faQuestionCircle,faCheck
 )
 
 Vue.component('Fa', FontAwesomeIcon)

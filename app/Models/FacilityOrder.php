@@ -18,8 +18,13 @@ class FacilityOrder extends Pivot
     public $incrementing = true;
     public function Supplier()
     {
-        return $this->hasOne(User::class , 'voted_for');
+        return $this->belongsTo(User::class , 'voted_for');
     }
+    public function Order()
+    {
+        return $this->belongsTo(Order::class );
+    }
+
 
 
 }

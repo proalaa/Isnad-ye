@@ -39,7 +39,7 @@
           </a>
           <ul id="offers-route-items" class="collapse">
             <li class="list-unstyled"><router-link to="/offers" exact tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">عروضي</router-link></li>
-            <li class="list-unstyled"><router-link to="/offers/new" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">إنشاء عرض جديد</router-link></li>
+            <li class="list-unstyled"><router-link to="/offers/orders" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">الطلبات المتاحة</router-link></li>
           </ul>
         </template>
       </div>

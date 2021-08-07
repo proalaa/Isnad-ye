@@ -8,7 +8,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\LocationController;
-use App\Http\Controllers\OfferController;
+use App\Http\Controllers\OffersController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
@@ -34,15 +34,18 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::patch('settings/password', [PasswordController::class, 'update']);
     Route::get('settings/countries' , [LocationController::class , 'listCountries']);
     Route::get('settings/cities' , [LocationController::class , 'listCitiesForCountry']);
-    Route::post('orders/create' , [OrdersController::class, 'create']);
+    Route::post('orders/create' , [OrdersController::class, 'store']);
     Route::get('orders/{order}' , [OrdersController::class , 'edit'])->where('order' , '[0-9]+');;
+    Route::put('orders/{order}/publish' , [OrdersController::class , 'publishOrder'])->where('order' , '[0-9]+');;
     Route::get('orders/myorders' , [OrdersController::class, 'getMyOrders']);
     Route::get('orders/otherorders' , [OrdersController::class, 'getOthersOrders']);
-    Route::patch('orders/{order}' , [OrdersController::class , 'store'])->where('order' , '[0-9]+');
+    Route::get('orders/{order}/offers' , [OrdersController::class, 'getRelatedOffers']);
+    Route::patch('orders/{order}' , [OrdersController::class , 'update'])->where('order' , '[0-9]+');
     Route::delete('orders/{order}' , [OrdersController::class , 'destroy'])->where('order' , '[0-9]+');
     Route::get('orders/shared/{order}' , [OrdersController::class , 'participate'])->where('id' , '[0-9]+');
     Route::patch('orders/shared/{order}' , [OrdersController::class , 'storeParticipation'])->where('order' , '[0-9]+');
-    Route::get('offers/orders' , [OfferController::class , 'getAvailableOrders']);
+    Route::get('orders/published' , [OffersController::class , 'getPublishedOrders'] );
+    Route::resource('offers' , OffersController::class);
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

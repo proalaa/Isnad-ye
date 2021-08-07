@@ -36,7 +36,13 @@ class OrdersController extends Controller
 //        return new OrderResource($orders->);//eager loading
 //        $orders = Order::with('owner:id,name')->get(); //eager loading
     }
+    public function getRelatedOffers(Order $order)
+    {
 
+     $orderOffers =  $order->load('Offers');
+//        return $order->select('id')->get()->load('Offers');
+        return $orderOffers;
+    }
     public function getOthersOrders()
     {
 //        $facilities = User::Facility()->with('Orders')->whereHas('Orders' ,function ($q){
@@ -80,12 +86,47 @@ class OrdersController extends Controller
 //
 //        return OrderResource::collection($orders->get())->response();
     }
-    public function create(OrdersRequest $request)
+    public function publishOrder(Order $order)
+    {
+        $current = new Carbon();
+
+        try {
+            $order->posted_at = $current;
+            if($order->is_shareable)
+                $order->status = '2' ;
+            else
+                $order->status = '3';
+            $order->save();
+
+            return response()->json(['message' => 'Success']);
+        }
+        catch (Throwable $exception)
+        {
+            return response()->json(['message' => 'error'] , 500);
+        }
+    }
+    public function saveAsDraft()
+    {
+        $order->status = 1;
+    }
+
+
+    public function store(OrdersRequest $request)
     {
         try {
             $order = new Order();
-            $this->ManipulateOrder($order);
-
+            if($request->input('save_as_draft')) {
+                $order->status = '1';
+            }
+            else
+            {
+                $order->posted_at = Carbon::now();
+                if ($request->input('is_shareable'))
+                    $order->status = '2';
+                else
+                    $order->status = '3';
+            }
+                $this->ManipulateOrder($order);
             Auth::user()->Orders()->attach($order,['is_owner' => true  , 'products' => json_encode($request->get('products'))] );
 
             return response()->json(['message' => 'Success']);
@@ -103,9 +144,8 @@ class OrdersController extends Controller
     {
         $order = Auth::user()->Orders()->find($order->id);
         return new OrderResource($order);
-
     }
-    public function store(Request $request)
+    public function update(OrdersRequest $request)
     {
         try {
             $order = Auth::user()->Orders()->find($request->input('id'));
@@ -136,7 +176,6 @@ class OrdersController extends Controller
         }
         catch (Exception $exception)
         {
-            dd($exception);
             return response()->json(['status' => 'error','message' => $exception  ] , 500);
         }
         return response()->json(['status' => 'success','message' => 'تم الاشتراك في الطلب بنجاح' ]);
@@ -162,12 +201,11 @@ class OrdersController extends Controller
      */
     private function ManipulateOrder(Order $order): void
     {
-        $current = new Carbon();
 
         $order->is_shareable = request('is_shareable');
-        $order->shareable_until = $current->copy()->addDays(request('post_period'));
-        $order->open_until = $order->shareable_until->copy()->addDays(request('open_duration'));
-        $order->votable_until = $order->open_until->copy()->addDays(request('vote_duration'));
+        $order->share_duration = request('post_duration');
+        $order->open_duration = request('open_duration');
+        $order->vote_duration = request('vote_duration');
         $order->owner_id = $order->owner_id = Auth::user()->id;
         $order->save();
     }

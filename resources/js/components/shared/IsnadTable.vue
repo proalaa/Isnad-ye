@@ -13,23 +13,30 @@
       <tbody style="max-height: 300px ;height: auto">
       <template v-for="item in items">
 
-        <tr :key="item.id" class="text-center mt-3 item-header" >
-          <td scope="row" v-for="(t, key) in item" v-if="key != 'is_shareable' && key != 'products' && key != 'more'">
+        <tr :key="item.id" class="text-center mt-3 item-header"  >
+          <td scope="row" v-for="(t, key) in item" v-if="key != 'is_shareable' && key != 'products' && key != 'more' && key!='share_end_at' && key!='offering_end_at' && key!='vote_end_at'">
             {{ t }}
           </td>
 
 
-          <td class="d-flex justify-content-center align-items-center">
+          <td class="d-flex justify-content-center align-items-center" style="width:250px">
             <div v-if="!isForParticipate">
-              <div class="" v-if="item.status == 4">
-                <v-button :link="'/order/' + item.id + '/offers'" type="info">مشاهدة العروض</v-button>
+              <div class="" v-if="item.status == 'مفتوح'">
+                <v-button :link="'/orders/' + item.id + '/offers'" type="info">مشاهدة العروض</v-button>
               </div>
-              <div class="" v-else>
+<!--              <div class="" v-if="item.status == 'قيد المشاركة'">-->
+<!--                <v-button :link="'/order/' + item.id + '/offers'" type="info">مشاهدة المشاركات</v-button>-->
+<!--              </div>-->
+              <div class="d-flex align-items-center" v-if="item.status == 'انتظار'">
                 <a role="button" :href="`/orders/${item.id}/edit`" class="btn btn-outline-success border-0"   style="border-radius: 10px">
                   <Fa icon="pencil-alt" />
                 </a>
-                <button class="btn btn-outline-danger border-0 " @click="deleteOrder(item.id)" style="margin-inline-start: 10px; border-radius: 10px">
+                <button class="btn btn-outline-danger border-0 " @click="deleteOrder(item.id)" style=" border-radius: 10px">
                   <Fa icon="trash-alt" />
+                </button>
+                <button class="btn btn-success mr-3" @click="publishOrder(item)" style="border-radius: 10px">
+                  <fa icon="check"/>
+                  <span class="mr-1" > نشر الطلب</span>
                 </button>
               </div>
             </div>
@@ -48,7 +55,15 @@
             </button>
           </td>
         </tr>
-
+        <p class="text-center text-success font-weight-bold" v-if="item.status == 'قيد المشاركة'">
+          تنتهي فترة استقبال المشاركات {{getDiffFromNow(item.share_end_at) }}
+        </p>
+        <p class="text-center text-success font-weight-bold" v-if="item.status == 'مفتوح'">
+          تنتهي فترة استقبال العروض {{ getDiffFromNow(item.offering_end_at) }}
+        </p>
+        <p class="text-center text-success font-weight-bold" v-if="item.status == 'قيد التصويت'">
+          تنتهي فترة التصويت {{getDiffFromNow(item.vote_end_at)}}
+        </p>
         <tr :id="'detailsRow' + item.id" v-if="item.products">
           <td colspan="5" class=" py-2">
             <div class="text-right details-content card collapse" :id="'itemDetails' + item.id">
@@ -73,6 +88,8 @@
             </div>
           </td>
         </tr>
+
+        <hr/>
       </template>
       </tbody>
     </table>
@@ -84,6 +101,7 @@ import IsnadButton from "./IsnadButton";
 import VButton from "../Button";
 import axios from "axios";
 import Swal from "sweetalert2";
+import moment from "moment";
 import NoItems from "./noItems";
 export default {
   name: "isnadTable",
@@ -104,10 +122,16 @@ export default {
 
   },
   computed:{
+
     },
   mounted() {
   },
   methods: {
+    getDiffFromNow(date)
+    {
+      moment.locale('ar');
+      return moment(date).fromNow();
+    },
     deleteOrder(item) {
       if (!item) {
         return;
@@ -137,6 +161,26 @@ export default {
             })
             .catch(err => console.log(err.message));
         }})
+    },
+
+    publishOrder(order)
+    {
+      axios.put(`/api/orders/${order.id}/publish`).then((data) =>{
+        this.$emit('updateView');
+        Swal.fire({
+          title:'تم نشر الطلب',
+          text:'تم نشر الطلب بنجاح',
+          icon:'success',
+          // backdrop: `
+          //   rgba(0,0,123,0.4)
+          //   url("/images/fireWork.gif")
+          //   left top
+          //   no-repeat
+          // `
+        })
+      }).catch(e =>{
+        console.log(e.message());
+      })
     }
   }}
 </script>
