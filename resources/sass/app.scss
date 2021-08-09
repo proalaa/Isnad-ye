@@ -8,10 +8,48 @@
 @import 'elements/buttons';
 @import 'elements/sidebar';
 @import 'elements/transitions';
-//@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
-//body {
-//  font-family: 'Almarai', sans-serif;
-//}
+
+/* arabic */
+
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('../fonts/Almarai-Light.woff2') format('woff2');
+}
+/* arabic */
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/Almarai-Regular.woff2') format('woff2');
+}
+/* arabic */
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/Almarai-Bold.woff2') format('woff2');
+}
+/* arabic */
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../fonts/Almarai-ExtraBold.woff2') format('woff2');
+}
+@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
+body {
+  font-family: 'Almarai', sans-serif;
+}
+body
+{
+  font-family: Almarai;
+}
 input,select{
   border-radius: 30px !important;
 }
