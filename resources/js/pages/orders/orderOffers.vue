@@ -9,6 +9,7 @@
       </div>
     </card>
     <card :title="'عرض رقم ('+ offer.id+') على طلب <..>'" v-for="offer in order.offers" :key="offer.id" class="my-4">
+      <div class="container-fluid">
       <table class="table">
         <thead>
         <tr>
@@ -40,13 +41,13 @@
         </tbody>
       </table>
       <div class="mt-1 border-top pt-3">
-        <div class=" d-flex font-weight-bold">
+        <div class=" d-flex font-weight-bold justify-content-around">
           <h5>الاجمالي : <span class="font-weight-bold">  {{offer.total}} ريال</span></h5>
           <h5 class="mr-5">الحد الادنى لالغاء العرض : <span class="font-weight-bold text-danger">{{offer.min_price}} ريال</span></h5>
         </div>
         <hr/>
 
-        <div class="row justify-content-between mt-5">
+        <div class="row justify-content-around mt-5">
 
           <div class="col-md-10 d-lg-flex justify-content-around">
             <p>سياسةالضمان: <span class="font-weight-bold">{{ offer.warranty_policy }}</span></p>
@@ -62,6 +63,7 @@
           </div>
         </div>
       </div>
+      </div>
     </card>
     </div>
   </div>
@@ -75,6 +77,7 @@ import moment from "moment";
 export default {
   name: "orderOffers",
   components: {IsnadButton, Card},
+  middleware: ['auth', 'entity'],
   data:()=>({
     order:[
       {id:1 ,shippingPolicy:'........' , paymentPolicy:'دفع عند الاستلام',

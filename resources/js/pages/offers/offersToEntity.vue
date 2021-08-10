@@ -52,6 +52,7 @@ import IsnadButton from "../../components/shared/IsnadButton";
 export default {
   name: "OffersToEntity",
   components: {IsnadButton, Card},
+  middleware: ['auth', 'supplier'],
   data:()=>({
     offers:[
       {id:1 ,shippingPolicy:'........' , paymentPolicy:'دفع عند الاستلام',

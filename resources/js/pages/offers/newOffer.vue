@@ -119,6 +119,7 @@ export default {
     form: new Form({
       products:[],order_id : null, warranty_policy:0 , shipping_policy:null ,validity:null, total:0 , min_price:null , delivery_duration:null
     }),
+    middleware: ['auth', 'supplier'],
 
     order:null,
   }),

@@ -16,10 +16,11 @@
       components:{
         OrderInputs
       },
-      middleware: 'auth',
+      middleware: ['auth', 'entity'],
       data:() =>({
         form: null
       })
+
       ,
       methods:{
         updateOrder(){

@@ -12,7 +12,8 @@ export default {
     OrderInputs
 
   },
-  middleware: 'auth',
+  middleware: ['auth', 'entity'],
+
   data:()=>({
     form: new Form({
       products:[{name:null , unit:null , quantity: null , description:null}], is_shareable:0 ,post_duration:null ,open_duration:null, vote_duration:null

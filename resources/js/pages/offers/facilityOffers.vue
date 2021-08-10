@@ -70,6 +70,8 @@ export default {
     orders:null,
     modalData:null
 }),
+  middleware: ['auth', 'supplier'],
+
   methods:{
     async getPublishedOrders(){
       const {data} = await axios.get('/api/orders/published');

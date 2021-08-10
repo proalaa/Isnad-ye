@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 export default {
   name: "orderParticipate",
   components: {OrderInputs},
+  middleware: ['auth', 'entity'],
   data:()=>({
     form : null
   }),

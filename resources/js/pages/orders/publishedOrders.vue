@@ -139,6 +139,7 @@ export default {
     publishedOrders:''
   }
   ),
+  middleware: ['auth', 'entity'],
   methods:{
     async fetchOrders()
     {

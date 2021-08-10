@@ -4,7 +4,8 @@
 
 <script>
 export default {
-  name: "myOffers"
+  name: "myOffers",
+  middleware: ['auth', 'supplier'],
 }
 </script>
 
