@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\BannedUserException;
 use App\Exceptions\VerifyEmailException;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -31,13 +32,16 @@ class LoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
-        $token = $this->guard()->attempt($this->credentials($request));
+        $token = $this->guard()->attempt(array_merge($this->credentials($request)));
 
         if (! $token) {
             return false;
         }
-
         $user = $this->guard()->user();
+        if(!$user->active)
+        {
+            return  false;
+        }
         if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
             return false;
         }
@@ -81,6 +85,9 @@ class LoginController extends Controller
         if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
             throw VerifyEmailException::forUser($user);
         }
+
+        if($user && !$user->active)
+            throw BannedUserException::forUser($user);
 
         throw ValidationException::withMessages([
             $this->username() => [trans('auth.failed')],

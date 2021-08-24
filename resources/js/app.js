@@ -6,7 +6,9 @@ import App from '~/components/App'
 import '~/plugins'
 import '~/components'
 import './general'
-
+import helpers from "./mixins/helpers";
+Vue.mixin(helpers);
+Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

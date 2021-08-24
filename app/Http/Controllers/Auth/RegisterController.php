@@ -32,6 +32,10 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, User $user)
     {
+        if(!$user->active)
+        {
+            return response()->json(['banned' => true]);
+        }
         if ($user instanceof MustVerifyEmail) {
             return response()->json(['status' => trans('verification.sent')]);
         }

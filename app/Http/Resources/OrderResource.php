@@ -49,6 +49,7 @@ class OrderResource extends JsonResource
             'vote_end_at' => $this->vote_end_at,
             'participant_count' => count($this->facilities),
             'status' => $statuses[$this->status ?? 0] ,
+            'owner' => $this->whenLoaded('Owner' , $this->Owner->name),
             'more' =>[
                 'created_at'=> $this->created_at->format('Y-m-d H:i:s'),
 //            'products' => $this->whenPivotLoaded('facility_order', function (){

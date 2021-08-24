@@ -15,7 +15,7 @@
         </div>
         <div class="tab-content" id="pills-tabContent">
           <div class="tab-pane fade show active" id="pills-my_orders" role="tabpanel" aria-labelledby="pills-my_orders-tab">
-            <isnad-table  :ths="ths" :items="allOrders" :is-for-participate="false" @updateView="fetchOrders" />
+            <isnad-table  :ths="ths" :items="orders" :is-for-participate="false" @updateView="fetchOrders" />
           </div>
           <div class="tab-pane fade" id="pills-shared_order" role="tabpanel" aria-labelledby="pills-shared_order-tab">
             <isnad-table :ths="ths" :items="sharableOrders" :is-for-participate="false" />
@@ -48,11 +48,13 @@ export default {
     classes:[
       {id: 1 , title: 'الكل' , count : 3 , active:true},
       {id: 2 , title: 'قيد المشاركة' , count : 5 , active:false},
-      {id: 3 , title: 'قيد التصويت' , count : 2 , active:false},
-      {id: 4 , title: 'اشتقبال العروض' , count : 10 , active:false}
+      {id: 2 , title: 'انتظار' , count : 5 , active:false},
+      {id: 3 , title: 'مفتوح' , count : 2 , active:false},
+      {id: 4 , title: 'قيد التصويت' , count : 10 , active:false}
     ],
     ths:['order_id', 'share_duration' , 'open_duration' , 'vote_duration' , 'participants_count' , 'status' , 'actions'],
     allOrders:[],
+    orders:[],
     sharableOrders:[]
 
   }),
@@ -65,9 +67,22 @@ export default {
          return ;
        }
        this.allOrders = data;
+       this.orders = data;
     },
   },
-
+  watch:{
+    classes:{
+      handler(val){
+        const activeItem = val.filter((x) => x.active);
+        if(activeItem[0]['title'] == 'الكل')
+          return this.orders = this.allOrders;
+        this.orders = this.allOrders.filter((order) =>{
+          return order.status == activeItem[0]['title']
+        })
+      },
+      deep:true
+    }
+  },
   computed:{
 
   },

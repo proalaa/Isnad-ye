@@ -31,6 +31,6 @@ class UserController extends Controller
             'city_id' => 'nullable|integer',
             'district' => 'nullable|string'
         ]));
-
     }
+
 }

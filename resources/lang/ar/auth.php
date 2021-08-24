@@ -14,6 +14,7 @@ return [
     */
 
     'failed' => 'These credentials do not match our records.',
+    'banned' => 'حسابك يحتاج لتفعيل من قبل الادمن',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 ];

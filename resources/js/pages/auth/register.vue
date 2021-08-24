@@ -6,6 +6,11 @@
           {{ $t('verify_email_address') }}
         </div>
       </card>
+      <card v-else-if="mustVerifyByAdmin" :title="$t('register')">
+        <div class="alert alert-success" role="alert">
+          {{ $t('verify_by_admin') }}
+        </div>
+      </card>
       <card v-else :title="$t('register')">
         <form @submit.prevent="register" @keydown="form.onKeydown($event)">
           <!-- Name -->
@@ -99,7 +104,8 @@ export default {
       password_confirmation: '',
       role: ''
     }),
-    mustVerifyEmail: false
+    mustVerifyEmail: false,
+    mustVerifyByAdmin: false,
   }),
   computed: {
     userRoles () {
@@ -110,11 +116,13 @@ export default {
     async register () {
       // Register the user.
       const { data } = await this.form.post('/api/register')
-
       // Must verify email fist.
       if (data.status) {
         this.mustVerifyEmail = true
-      } else {
+      }else if (data.banned) {
+        this.mustVerifyByAdmin = true
+      }
+      else {
         // Log in the user.
         const { data: { token } } = await this.form.post('/api/login')
 

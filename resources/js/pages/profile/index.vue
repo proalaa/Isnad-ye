@@ -9,10 +9,11 @@
       <div class="card-body p-5">
         <alert-success class="text-right" :form="form" :message="$t('info_updated')" />
         <form action="" @submit.prevent="update" @keydown="form.onKeydown($event)" enctype="multipart/form-data">
-          <div class="text-center ">
+          <div class="text-center">
             <div class="d-inline-block pb-3 position-relative">
-              <img src="/images/slide-01.jpg" alt="personal-image" style="height: 120px;width: 120px"  class="rounded-circle img-fluid">
-              <span role="button" data-target="" id="edit-personal-image"><Fa icon="pen"/></span>
+              <img :src="profileImagePreview" alt="personal-image" style="height: 120px;width: 120px"  class="rounded-circle img-fluid"/>
+              <span @click.prevent="$refs.profile_image.click()" role="button" data-target="" id="edit-personal-image"><Fa icon="pen"/></span>
+              <input type="file" style="display: none" accept=".jpg, .jpeg, .png" ref="profile_image"  @input="handleProfileImageProcess"/>
             </div>
           </div>
         <div class="row text-right ">
@@ -68,14 +69,18 @@
             </div>
             <div class="col-md-3">
             <div class="form-group">
-              <input type="file" ref="commercial_register_certificate" @change="handleImageProcesses" name="commercial_register_certificate" id="commercial_register_certificate" class="hidden-input" accept="image/*">
+              <input type="file" ref="commercial_register_certificate" accept=".jpg, .jpeg, .png" @input="handleImageProcesses" name="commercial_register_certificate" id="commercial_register_certificate" class="hidden-input">
               <label for="commercial_register_certificate" class="uploadFileBox">شهادة السجل التجاري</label>
               <div for="" id="file-upload_box">
-<!--                <img src="/images/uploadFileIcon.png" alt=""style="max-width:50px ;max-height:50px" >-->
+                <img src="/images/uploadFileIcon.png" alt=""style="max-width:50px ;max-height:50px" >
                 <div class="" v-if="this.commercialRegisterCertificatePreviewImage">
                   <img :src="this.commercialRegisterCertificatePreviewImage" alt="" style="max-width:50px ;max-height:50px" class="d-block mb-2 py-2">
                   <button @click.prevent="resetPreview" style="" class="btn btn-warning rounded-circle"><Fa icon="trash-alt"/></button>
                 </div>
+<!--                <div class="" v-else-if="form.commercial_register_certificate">-->
+<!--                  <img :src="getimage(this.form.commercial_register_certificate)" alt="" style="max-width:50px ;max-height:50px" class="d-block mb-2 py-2">-->
+<!--                  <button @click.prevent="resetPreview" style="" class="btn btn-warning rounded-circle"><Fa icon="trash-alt"/></button>-->
+<!--                </div>-->
                 <div  @click="triggerInput($event)" class="mt-3" style="cursor: pointer" v-else >
                   <img src="/images/uploadFile.png" alt="uploadFileIcon" style="max-width:50px ;max-height:50px" >
                   <p>اضغط لرفع الصورة</p>
@@ -97,6 +102,7 @@
 import {mapActions, mapGetters} from "vuex";
 import Form from "vform";
 import axios from "axios";
+import {serialize} from 'object-to-formdata';
 import Compressor from "compressorjs"
 export default {
   layout: 'default',
@@ -118,17 +124,24 @@ export default {
     countries: [],
     cities: [],
     commercialRegisterCertificatePreviewImage: null,
+    profileImagePreview: null,
     tempImage :null
   }),
 
-  computed: mapGetters({
-    user: 'auth/user'
-  }),
-  methods:{
-    async update () {
-      const { data } = await this.form.patch('/api/settings/profile')
 
-      this.$store.dispatch('auth/updateUser', { user: data })
+  computed: {
+    ...mapGetters({
+    user: 'auth/user'
+  })},
+  methods:{
+     update () {
+      const { data } =  this.form.submit('post','/api/settings/profile',{
+        transformRequest: [function (data, headers) {
+          return serialize(data);
+        }]
+      });
+
+       // this.$store.dispatch('auth/updateUser', { user: data })
     },
     async fetchCountries(){
       const {data} = await axios.get('/api/settings/countries');
@@ -140,15 +153,7 @@ export default {
     },
     handleImageProcesses()
     {
-      var file = '';
-      this.form.commercial_register_certificate = null;
-      if(this.form.commercial_register_certificate)
-        file = this.form.commerical_register_certificate;
-      else
-        file = this.$refs.commercial_register_certificate.files[0];
-      if (!file) {
-        return;
-      }
+      const file = this.$refs.commercial_register_certificate.files[0];
       const self = this;
       new Compressor(file, {
         quality: 0.6,
@@ -157,7 +162,6 @@ export default {
         // which means you have to access the `result` in the `success` hook function.
         success(result) {
           let reader = new FileReader();
-
           reader.onload = function () {
             self.commercialRegisterCertificatePreviewImage = reader.result
           };
@@ -178,19 +182,47 @@ export default {
     },
     resetPreview(){
       this.commercialRegisterCertificatePreviewImage = '';
+    },
+
+    handleProfileImageProcess() {
+      const file = this.$refs.profile_image.files[0];
+      const self = this;
+      new Compressor(file, {
+        quality: 0.6,
+
+        // The compression process is asynchronous,
+        // which means you have to access the `result` in the `success` hook function.
+        success(result) {
+          let reader = new FileReader();
+          reader.onload = function () {
+            self.profileImagePreview = reader.result
+          };
+          reader.readAsDataURL(result);
+          self.form.profile_image = result;
+        },
+        error(err) {
+          console.log(err.message);
+        },
+      })
     }
   },
   created () {
     this.form.keys().forEach(key => {
       this.form[key] = this.user[key]
     });
+
+    if(this.form.commercial_register_certificate)
+      this.commercialRegisterCertificatePreviewImage = this.getimage(this.form.commercial_register_certificate);
+    if(this.form.profile_image)
+      this.profileImagePreview = this.getimage(this.form.profile_image);
     this.fetchCountries();
     this.fetchCities();
-    this.handleImageProcesses();
+    // this.handleImageProcesses();
   },
   editProfileImage(){
    return ;
-  }
+  },
+
 }
 </script>
 

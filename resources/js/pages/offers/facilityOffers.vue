@@ -6,7 +6,7 @@
         <no-items/>
       </div>
       <div class="row justify-content-around" v-else >
-        <order-card :order="order" @openModal="updateModalData" v-for="order in orders" :key="order.id" />
+        <order-card :order="order"  @openModal="updateModalData" v-for="order in orders" :key="order.id" />
       </div>
 
     </div>
@@ -30,6 +30,7 @@
                 <th>الوحدة</th>
                 <th>الكمية</th>
                 <th>وصف</th>
+                <th>صورة</th>
               </tr>
               </thead>
               <tbody>
@@ -41,6 +42,12 @@
                     <td>{{ product.unit }}</td>
                     <td>{{product.quantity}}</td>
                     <td>{{product.description}}</td>
+                    <td>
+                      <div>
+                      <img v-if="checkString(product.image)" style="height: 40px ; width: 40px;cursor: pointer" @click.prevent="imagePreview(getimage(product.image))" :src="getimage(product.image)" alt="product_image">
+                      <p v-else>لايوجد</p>
+                      </div>
+                    </td>
                   </tr>
                 </template>
               </template>

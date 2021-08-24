@@ -43,7 +43,7 @@ export default {
         if(item == current_item)
           item.active = true;
       })
-      this.$emit('updateview' , item )
+      this.$emit('updateview')
     }
   },
   mounted() {

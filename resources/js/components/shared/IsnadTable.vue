@@ -10,20 +10,26 @@
         <td></td>
       </tr>
       </thead>
-      <tbody style="max-height: 300px ;height: auto">
+      <tbody style="max-height: 400px ;height: auto">
       <template v-for="item in items">
 
         <tr :key="item.id" class="text-center mt-3 item-header"  >
           <td scope="row" v-for="(t, key) in item" v-if="key != 'is_shareable' && key != 'products' && key != 'more' && key!='share_end_at' && key!='offering_end_at' && key!='vote_end_at'">
-            {{ t }}
+            {{ t != null? t : 'لايوجد' }}
+
           </td>
 
 
           <td class="d-flex justify-content-center align-items-center" style="width:250px">
+
             <div v-if="!isForParticipate">
-              <div class="" v-if="item.status == 'مفتوح'">
+              <div class="" v-if="item.status == 'مفتوح' || item.status == 'قيد التصويت'">
                 <v-button :link="'/orders/' + item.id + '/offers'" type="info">مشاهدة العروض</v-button>
               </div>
+              <div class="" v-if="item.status == 'اكتمال'">
+                <v-button :link="'/orders/' + item.id + '/offers'" type="success">تفاصيل</v-button>
+              </div>
+
 <!--              <div class="" v-if="item.status == 'قيد المشاركة'">-->
 <!--                <v-button :link="'/order/' + item.id + '/offers'" type="info">مشاهدة المشاركات</v-button>-->
 <!--              </div>-->
@@ -47,6 +53,9 @@
               <a class="btn btn-success" :href="'published/' + item.id " >
                 مشاركة
               </a>
+              <div class="" v-if="item.status == 'مفتوح' || item.status == 'قيد التصويت'">
+                <v-button :link="'/orders/' + item.id + '/offers'" type="info">مشاهدة العروض</v-button>
+              </div>
             </div>
           </td>
           <td>
@@ -74,6 +83,7 @@
                 <th>وحدة الكمية</th>
                 <th>الكمية</th>
                 <th>وصف</th>
+                <th>صورة</th>
                 </thead>
                 <tbody>
                 <tr class="text-center" v-for=" (product, index) in item.products" :key="index">
@@ -82,6 +92,12 @@
                   <td>{{product.unit}}</td>
                   <td>{{product.quantity}}</td>
                   <td >{{product.description}}</td>
+                  <td >
+                    <div>
+                      <img v-if="checkString(product.image)" @click.prevent="imagePreview(getimage(product.image))" :src="getimage(product.image)" style="height: 50px;width: 50px;cursor: pointer" alt="image_preview">
+                      <p v-else>لايوجد</p>
+                    </div>
+                  </td>
                 </tr>
                 </tbody>
               </table>
@@ -129,6 +145,8 @@ export default {
   methods: {
     getDiffFromNow(date)
     {
+      console.log(date);
+      console.log(moment(date).fromNow());
       moment.locale('ar');
       return moment(date).fromNow();
     },
@@ -149,7 +167,6 @@ export default {
         if (result.isConfirmed) {
           axios.delete(`/api/orders/${item}`)
             .then(async ({data}) => {
-              console.log(data);
               const index = this.items.findIndex(i => i.id === item);
               console.log(index);
               this.items.splice(index , 1);

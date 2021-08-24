@@ -66,7 +66,17 @@ class OffersController extends Controller
             $offer->total = request('total');
             $offer->min_price = request('min_price');
             $offer->delivery_duration = request('delivery_duration');
-            $offer->products = request('products');
+            $products =[];
+            $products = request('products');
+            foreach (request('products') as $key => $product)
+            {
+                if($product['off_image'] ?? false)
+                {
+                    $path= request('products.' . $key .'.off_image')->store('products');
+                    $products[$key]['off_image'] = $path;
+                }
+            }
+            $offer->products = $products;
             $offer->save();
         }
         catch (Throwable $exception)

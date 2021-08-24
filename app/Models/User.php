@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -29,8 +30,10 @@ class User extends Authenticatable implements JWTSubject
         'district',
         'commercial_register_number',
         'commercial_register_certificate',
+        'profile_image',
         'password',
-        'role'
+        'role',
+        'active'
     ];
 
     /**
@@ -99,6 +102,16 @@ class User extends Authenticatable implements JWTSubject
             md5(strtolower($this->email)),
             $this->name ? urlencode("https://ui-avatars.com/api/$this->name") : 'mp',
         ]);
+    }
+    public function getCommercialRegisterCertificateAttribute($value)
+    {
+        return $value;
+    }
+    public function getProfileImageAttribute($value)
+    {
+        if($value)
+            return $value;
+        return 'avatars/default-avatar.jpg';
     }
 
     /**

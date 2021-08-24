@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use function Symfony\Component\Translation\t;
 
 class Order extends Model
 {
@@ -23,15 +24,20 @@ class Order extends Model
     ];
 
     public function getShareEndAtAttribute(){
-        return Carbon::parse($this->posted_at)->addDays($this->share_duration)->format('Y-m-d H:i:s');
+//        return  $this->posted_at;
+        if($this->is_shareable)
+//            return Carbon::parse($this->posted_at)->addDays($this->share_duration)->format('Y-m-d H:i:s');
+            return "2021-08-21 08:11:40";
     }
     public function getOfferingEndAtAttribute(){
         return  Carbon::parse($this->posted_at)->addDays($this->share_duration ?? 0)->addDays($this->open_duration)->format('Y-m-d H:i:s');
     }
     public function getVoteEndAtAttribute(){
-        return  Carbon::parse($this->posted_at)->addDays($this->share_duration ?? 0)
-            ->addDays($this->open_duration)->addDays($this->vote_duration ?? 0)->format('Y-m-d H:i:s');
+        if($this->is_shareable)
+            return  Carbon::parse($this->posted_at)->addDays($this->share_duration ?? 0)
+                ->addDays($this->open_duration)->addDays($this->vote_duration ?? 0)->format('Y-m-d H:i:s');
     }
+
 //    public function Orginal_Order()
 //    {
 //        return $this->hasOne(Order::class);

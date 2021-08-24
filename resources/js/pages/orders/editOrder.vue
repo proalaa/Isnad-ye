@@ -11,6 +11,7 @@
     import Form from "vform";
     import moment from "moment";
     import Swal from "sweetalert2";
+    import {serialize} from "object-to-formdata";
     export default {
       name: "editOrder",
       components:{
@@ -25,7 +26,14 @@
       methods:{
         updateOrder(){
 
-          this.form.patch(`/api/orders/${this.form.id}`).then(response => {
+          this.form.submit('post',`/api/orders/${this.form.id}/update`,{
+            transformRequest: [function (data, headers) {
+              return serialize(data , {
+                indices:true,
+                booleansAsIntegers:true
+              });
+            }]
+          }).then(response => {
             // if (!response.ok) {
             //   throw new Error(response.statusText)
             // }
@@ -66,9 +74,9 @@
           let self = this;
           axios.get(`/api/orders/${this.$route.params.id}?simple`).then(({data} ) =>{
           self.form= new Form(data);
-          this.form.post_duration =this.diffTime(this.form.shareable_until , this.form.created_at);
-          this.form.open_duration  =this.diffTime(this.form.open_until , this.form.shareable_until);
-          this.form.vote_duration =this.diffTime(this.form.votable_until , this.form.open_until);
+          // this.form.post_duration =this.diffTime(this.form.share_end_at , this.form.created_at);
+          // this.form.open_duration  =this.diffTime(this.form.open_until , this.form.shareable_until);
+          // this.form.vote_duration =this.diffTime(this.form.votable_until , this.form.open_until);
         }).catch(e =>{
           console.log(e.message)
           });

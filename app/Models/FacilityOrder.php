@@ -16,9 +16,10 @@ class FacilityOrder extends Pivot
 
     protected $table = 'facility_order';
     public $incrementing = true;
-    public function Supplier()
+
+    public function Offer()
     {
-        return $this->belongsTo(User::class , 'voted_for');
+        return $this->belongsTo(Offer::class , 'voted_for');
     }
     public function Order()
     {

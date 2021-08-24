@@ -2,13 +2,27 @@
   <div>
     <div class="container-fluid">
     <card>
-      <div class="d-flex justify-content-between px-4 ">
+      <div class="d-flex justify-content-between align-items-baseline px-4 ">
         <p class="mb-0">لديك حاليا {{ order.offers.length }} عروض على طلبك</p>
-        <p class="mb-0"  v-if="order.status == 3">سيبدا التصويت:  <span class="text-success"> {{getDiffFromNow(order.offering_end_at)}}</span></p>
-        <p class="mb-0" v-if="order.status == 2">متبقي على انتهاء التصويت: <span class="text-success" > {{ getDiffFromNow(order.vote_end_at) }}</span></p>
+
+        <template v-if="order.status == 3">
+          <button v-if="isOrderHasOffers && isOwner" class="btn btn-primary" @click.prevent="skipStatus">تخطي مرحلة استقبال العروض<fa  class="mr-2" icon="check-circle"/></button>
+          <p class="mb-0">ينتهي استقبال العروض: <span class="text-success"> {{getDiffFromNow(order.offering_end_at)}}</span></p>
+        </template>
+        <template v-if="order.status == 4">
+          <button v-if="checkAllVotes && isOwner" class="btn btn-primary" @click.prevent="skipStatus">  تخطي مرحلة التصويت<fa class="mr-2" icon="check-circle"/></button>
+          <p class="mb-0" v-if="order.is_shareable">متبقي على انتهاء التصويت: <span class="text-success" > {{ getDiffFromNow(order.vote_end_at) }}</span></p>
+        </template>
+        <template v-if="order.is_shareable">
+        </template>
+
+
+
+        <VButton v-if="order.status == 5" type="success" :link="`/orders/${this.order.id}/invoice`" >طباعة الفاتورة</VButton>
       </div>
     </card>
     <card :title="'عرض رقم ('+ offer.id+') على طلب <..>'" v-for="offer in order.offers" :key="offer.id" class="my-4">
+
       <div class="container-fluid">
       <table class="table">
         <thead>
@@ -23,6 +37,7 @@
           <th>بلد الصنع</th>
           <th>السعر الاجمالي</th>
           <th>ملاحظات</th>
+          <th>صورة</th>
         </tr>
         </thead>
         <tbody>
@@ -31,12 +46,16 @@
           <td>{{product.name}}</td>
           <td>{{product.unit}}</td>
           <td>{{product.quantity}}</td>
-          <td>{{product.expired_date}}</td>
+          <td>{{product.expired_date != null ? product.expired_date : 'لايوجد'}}</td>
           <td>{{product.off_name}}</td>
           <td>{{product.brand}}</td>
           <td>{{product.made_in}}</td>
           <td>{{product.price}}</td>
           <td>{{product.notices}}</td>
+          <td>
+            <img v-if="checkString(product.off_image)" @click="imagePreview(getimage(product.off_image))" style="width: 40px ; height: 40px;cursor: pointer" :src="getimage(product.off_image)" alt="">
+            <p v-else>لايوجد</p>
+          </td>
         </tr>
         </tbody>
       </table>
@@ -57,13 +76,26 @@
             <p>وقت التسليم: <span class="font-weight-bold"> {{ offer.delivery_duration }} يوم/ايام</span></p>
             <p>ملاحظات اضافية: <span class="font-weight-bold">{{offer.notices}} </span></p>
           </div>
+          <template v-if="order.status == 4">
 
-          <div class="col-md-2" v-if="order.status == 'قيد التصويت'">
-            <isnad-button :type="success">تصويت</isnad-button>
-          </div>
+            <template v-if="votedOffer == null">
+              <button class="btn btn-primary" @click.prevent="voteOnOffer(offer)">
+                  تصويت
+              </button>
+            </template>
+            <template v-else>
+              <button class="btn btn-warning" v-if="offer.id === votedOffer" @click="withdraw()">
+                سحب التصويت
+              </button>
+            </template>
+          </template>
+          <template v-if="order.status == 5" >
+            <h4 class="float-left text-success">العرض الفائز</h4>
+          </template>
         </div>
       </div>
       </div>
+
     </card>
     </div>
   </div>
@@ -74,33 +106,101 @@ import Card from "../../components/Card";
 import IsnadButton from "../../components/shared/IsnadButton";
 import axios from "axios";
 import moment from "moment";
+import {mapGetters} from "vuex";
+import VButton from "../../components/Button";
+import Swal from "sweetalert2";
 export default {
   name: "orderOffers",
-  components: {IsnadButton, Card},
+  components: {VButton, IsnadButton, Card},
   middleware: ['auth', 'entity'],
   data:()=>({
     order:[
-      {id:1 ,shippingPolicy:'........' , paymentPolicy:'دفع عند الاستلام',
-        products:[{name:'جهاز تنفس اصناعي' , unit:'حبة' ,amount:5 , desc:'الماني ذو ثلاث قنوات اولومبوز' ,totalPrice:5000 , currency:'دولار'}
-          ,{name:'جهاز تنفس اصناعي' , unit:'حبة' ,amount:5 , desc:'الماني ذو قناتين اولومبوز' ,totalPrice:10000 , currency:'ريال'}]},
-      {id:2 ,shippingPolicy:'........' , paymentPolicy:'دفع عند الاستلام', products:[{name:'جهاز تنفس اصناعي' , unit:'حبة' ,amount:5 , desc:'الماني ذو ثلاث قنوات اولومبوز' ,totalPrice:5000 , currency:'دولار'}]},
     ]
   }),
   computed:{
+
     offerTotalPrice(){
       const total = this.order.offers.reduce((sum , offer) => sum + offer.totalPrice);
       return total;
     },
-    async fetchOffers()
+    checkAllVotes()
     {
-      const {data} = await axios.get(`/api/orders/${this.$route.params.id}/offers`);
-      this.order = data;
+
+      const subscriptions =[...this.order.facility_order];
+      const offerVoted = subscriptions.filter((x) => x.voted_for == null);
+
+      return !offerVoted.length;
+    },
+    isOwner()
+    {
+      return this.order.owner_id == this.user.id;
     }
+    ,
+    votedOffer()
+    {
+      const subscriptions =[...this.order.facility_order];
+      const offerVoted = subscriptions.filter((x) => x.facility_id == this.user.id)[0].voted_for;
+      return offerVoted;
+    },
+    isOrderHasOffers()
+    {
+      return !!this.order.offers.length;
+    },
+    ...mapGetters({
+      user: 'auth/user'
+    }),
+
   },
   methods:{
     getDiffFromNow(date){
       moment.locale(this.$i18n.locale);
       return moment(date).fromNow();
+    },
+     voteOnOffer(offer) {
+      console.log('fff');
+      const response = axios.patch(`/api/orders/vote/${this.order.id}/${offer.id}`).then((response)=>{
+        this.fetchOffers();
+      });
+    },
+    withdraw(){
+      const response = axios.delete(`/api/orders/withdraw/${this.order.id}`).then((response)=>{
+        this.fetchOffers();
+      });
+    },
+    async fetchOffers()
+    {
+      const {data} = await axios.get(`/api/orders/${this.$route.params.id}/offers`);
+      this.order = data;
+    },
+    skipVoting() {
+    },
+
+    skipStatus() {
+      console.log('ff');
+      Swal.fire({
+        title:'لازال هناك وقت!',
+        text:'هل انت متاكد',
+        icon:'warning',
+        showCancelButton: true,
+        confirmButtonColor: `var(--primary)`,
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'تخطي',
+        cancelButtonText: 'إلغاء'
+      }).then((result)=>{
+        if(result.isConfirmed)
+        {
+          axios.patch(`/api/orders/${this.order.id}/skipstatus`).then((response) =>{
+            console.log(response);
+            this.order.status = parseInt(this.order.status) + 1;
+            if(this.order.status == 5)
+            {
+              axios.post(`/api/orders/${this.order.id}/invoice`).then((response) =>{
+                console.log(response);
+              });
+            }
+          })
+        }
+      })
     }
   }
   ,

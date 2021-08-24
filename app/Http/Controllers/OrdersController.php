@@ -6,15 +6,24 @@ use App\Http\Requests\OrdersRequest;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\sharedOrdersResource;
+use App\Models\FacilityOrder;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Traits\Creator;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use LaravelDaily\Invoices\Classes\Buyer;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
+use LaravelDaily\Invoices\Classes\Party;
+use LaravelDaily\Invoices\Classes\Seller;
+use LaravelDaily\Invoices\Invoice;
+use Symfony\Component\Console\Input\Input;
 use Throwable;
 
 class OrdersController extends Controller
@@ -38,10 +47,10 @@ class OrdersController extends Controller
     }
     public function getRelatedOffers(Order $order)
     {
-
-     $orderOffers =  $order->load('Offers');
-//        return $order->select('id')->get()->load('Offers');
+        $orderOffers =  Order::with(['Offers' , 'FacilityOrder'])->findOrFail($order->id);
+//        return $order->get();
         return $orderOffers;
+//        return $order->select('id')->get()->load('Offers');
     }
     public function getOthersOrders()
     {
@@ -86,12 +95,119 @@ class OrdersController extends Controller
 //
 //        return OrderResource::collection($orders->get())->response();
     }
-    public function publishOrder(Order $order)
+    public function skipStatus(Order $order)
     {
-        $current = new Carbon();
+        try {
+            $order->status =strval( $order->status + 1); ;
+            $order->save();
+            if( $order->status == '5'){
+//                $this->postInvoice($order);
+            }
+            return response()->json(['message' => 'تم تخطي هذه المرحلة بنجاح']);
+        }
+        catch (Exception $exception)
+        {
+            return response()->json(['message' => $exception->getMessage()] , 500);
+        }
+    }
+    public function voteOnOffer($order_id , $offer_id)
+    {
+        try {
+            $subscription = FacilityOrder::where(['order_id' => $order_id , 'facility_id' => Auth::id()]);
+            $subscription->update(['voted_for' => $offer_id]);
+        }
+        catch (Throwable $exception)
+        {
+            return response()->json(['message' => $exception->getMessage()] , 500);
+        }
+        return response()->json(['message' => 'Success']);
+
+    }
+    public function postInvoice(Order $order){
 
         try {
-            $order->posted_at = $current;
+            $facilities = $order->Facilities;
+            foreach ($facilities as $facility)
+            {
+                $subscription = $facility->pivot;
+                $subscriptionProducts = $subscription->products;
+                $offerProducts = $subscription->Offer->products;
+                $invoiceItems = array();
+                foreach ($subscriptionProducts as $subProduct)
+                {
+                    foreach ($offerProducts as $offProduct)
+                    {
+                        if($subProduct->name == $offProduct['name'])
+                        {
+                            $pricePerUnit = ($offProduct['price'] / $offProduct['quantity'] );
+                            $total = $pricePerUnit * $subProduct->quantity;
+                            array_push($invoiceItems ,
+                                (new InvoiceItem())
+                                    ->title($subProduct->name)
+                                    ->pricePerUnit($pricePerUnit)
+                                    ->quantity($subProduct->quantity)
+                                    ->discountByPercent(0)
+                                    ->taxByPercent(0)
+                                    ->units($subProduct->unit)
+                                    ->subTotalPrice($total)
+                            );
+                        }
+                    }
+                }
+
+                $supplier = $subscription->offer->supplier;
+                $customer = new Buyer([
+                    'name'          => $facility->name,
+                    'custom_fields' => [
+                        'email' => $facility->email,
+                    ],
+                ]);
+                $client = new Party([
+                    'name'          => $supplier->name,
+                    'phone'         => $supplier->phone_number,
+                ]);
+                App::setLocale('ar');
+                $invoice = new Invoice();
+                $invoice = $invoice->filename('OR_' . $order->id .'_OF_' . $subscription->voted_for . '_CL_' . $facility->id )
+                    ->buyer($customer)
+                    ->seller($client)
+                    ->currencyFormat('{VALUE} {SYMBOL}')
+                    ->addItems($invoiceItems);
+                $invoice->save('public');
+                $subscription->update(['invoice' => $invoice->url()]);
+        }
+        }
+        catch (Throwable $exception){
+            return response()->json(['message' => $exception->getMessage()] , 500);
+        }
+         return response()->json(['message' => 'تم حفظ الفاتورة بنجاح']);
+    }
+    public function getInvoice(Order $order)
+    {
+        $subscription = $order->FacilityOrder()->where(['facility_id' => Auth::id()])->first();
+        return $subscription->invoice;
+    }
+
+
+    public function WithdrawVote($order_id)
+    {
+
+        try {
+            $subscription = FacilityOrder::where(['order_id' => $order_id , 'facility_id' => Auth::id()]);
+            $subscription->update(['voted_for' => null]);
+        }
+        catch (Throwable $exception)
+        {
+            return response()->json(['message' => $exception->getMessage()] , 500);
+        }
+        return response()->json(['message' => 'Success']);
+
+    }
+    public function publishOrder(Order $order)
+    {
+
+        try {
+            $order->posted_at =  Carbon::now();;
             if($order->is_shareable)
                 $order->status = '2' ;
             else
@@ -113,6 +229,7 @@ class OrdersController extends Controller
 
     public function store(OrdersRequest $request)
     {
+
         try {
             $order = new Order();
             if($request->input('save_as_draft')) {
@@ -127,7 +244,18 @@ class OrdersController extends Controller
                     $order->status = '3';
             }
                 $this->ManipulateOrder($order);
-            Auth::user()->Orders()->attach($order,['is_owner' => true  , 'products' => json_encode($request->get('products'))] );
+
+            $products =[];
+            $products = request('products');
+            foreach (request('products') as $key => $product)
+            {
+                if($product['image'] ?? false)
+                {
+                    $path= request('products.' . $key .'.image')->store('products');
+                    $products[$key]['image'] = $path;
+                }
+            }
+            Auth::user()->Orders()->attach($order,['is_owner' => true  , 'products' => json_encode($products)]);
 
             return response()->json(['message' => 'Success']);
         }
@@ -135,6 +263,14 @@ class OrdersController extends Controller
         {
             return response()->json(['message' => $exception->getMessage()]);
         }
+    }
+
+    public function deleteProductImage($order , $request)
+    {
+        Auth::user()->Orders()->updateExistingPivot($order->id , [
+            'products' => $request->products
+        ]);
+
     }
 //    public function show(Order $order)
 //    {
@@ -203,7 +339,7 @@ class OrdersController extends Controller
     {
 
         $order->is_shareable = request('is_shareable');
-        $order->share_duration = request('post_duration');
+        $order->share_duration = request('share_duration');
         $order->open_duration = request('open_duration');
         $order->vote_duration = request('vote_duration');
         $order->owner_id = $order->owner_id = Auth::user()->id;

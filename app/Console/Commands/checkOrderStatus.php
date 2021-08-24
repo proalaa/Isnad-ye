@@ -39,10 +39,12 @@ class checkOrderStatus extends Command
      */
     public function handle()
     {
+        $share_done = Order::all()->where('share_end_at' , '<=' , Carbon::now())->where('status' , '==' , '2')->pluck('id');
+        Order::whereIn('id' ,$share_done)->update(['status' => '3']);
+
         $offering_done = Order::all()->where('offering_end_at' , '<=' , Carbon::now())->where('status' , '==' , '3')->pluck('id');
         Order::whereIn('id',$offering_done)->update(['status' => '4']);
-        $share_done = Order::all()->where('share_end_at' , '<=' , Carbon::now())->where('status' , '==' , '2')->pluck('id');
-         Order::whereIn('id' ,$share_done)->update(['status' => '3']);
+
         $vote_done = Order::all()->where('vote_end_at' , '<=' , Carbon::now())->where('status' , '==' , '4')->pluck('id');
          Order::whereIn('id',$vote_done)->update(['status' => '5']);
 

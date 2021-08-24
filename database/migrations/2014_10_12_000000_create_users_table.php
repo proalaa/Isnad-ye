@@ -20,14 +20,15 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->date('birth_date')->nullable();
+            $table->boolean('active')->default(false);
             $table->string('phone_number')->nullable();
             $table->mediumText('address')->nullable();
             $table->unsignedInteger('role')->default(0);
             $table->unsignedBigInteger('commercial_register_number')->nullable();
-            $table->unsignedBigInteger('commercial_register_certificate')->nullable();
+            $table->string('commercial_register_certificate' , 80)->nullable();
             $table->mediumText('licence')->nullable();
             $table->unsignedBigInteger('bank_account')->nullable();
-//            $table->string('profileImage')->nullable();
+            $table->string('profile_image')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

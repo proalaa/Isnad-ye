@@ -19,7 +19,7 @@ class CreateOffersTable extends Migration
             $table->unsignedBigInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('users');
             $table->enum('status' , [0,1,2,3,4,5])->default(1)->nullable();
-            $table->jsonb('products');
+            $table->json('products');
             $table->unsignedBigInteger('total');
             $table->unsignedBigInteger('min_price');
             $table->text('warranty_policy');

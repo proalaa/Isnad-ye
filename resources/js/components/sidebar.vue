@@ -6,16 +6,27 @@
       </div>
 
       <div>
-        <button class="d-inline-block exit-sidebar d-lg-none" @click="closeSidebar">
+        <button class="d-inline-block exit-sidebar d-lg-none bg-primary text-light" @click="closeSidebar">
           &times;
         </button>
-        <div class="clearfix d-lg-none" />
-        <router-link to="/home" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
-          <Fa icon="home" /><span class="align-self-start">{{ $t('home_page_title') }}</span>
-        </router-link>
-        <router-link to="/profile" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
-          <Fa icon="id-badge" /><span class="align-self-start">{{$t('profile_page_title')}}</span>
-        </router-link>
+    <!--  admin routes     -->
+        <template v-if="user.role == 0">
+          <router-link to="/admin" tag="a" exact role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
+            <Fa icon="home" /><span class="align-self-start">{{ $t('home_page_title') }}</span>
+          </router-link>
+          <router-link to="/admin/manage-flow" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
+            <Fa icon="shopping-cart" /><span class="align-self-start">{{ $t('admin_manage_flow_page_title') }}</span>
+          </router-link>
+        </template>
+        <template v-if="user.role == 2 || user.role == 1">
+          <div class="clearfix d-lg-none" />
+          <router-link to="/home" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
+            <Fa icon="home" /><span class="align-self-start">{{ $t('home_page_title') }}</span>
+          </router-link>
+          <router-link to="/profile" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
+            <Fa icon="id-badge" /><span class="align-self-start">{{$t('profile_page_title')}}</span>
+          </router-link>
+        </template>
     <!--  entity routes    -->
         <template v-if="user.role == 2">
 

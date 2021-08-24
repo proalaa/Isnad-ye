@@ -5,6 +5,7 @@
 <script>
 import Card from "../../components/Card";
 import OrderInputs from "../../components/shared/orderInputs";
+import {serialize} from 'object-to-formdata';
 import Form from 'vform';
 export default {
   name: "NewOrder",
@@ -16,7 +17,7 @@ export default {
 
   data:()=>({
     form: new Form({
-      products:[{name:null , unit:null , quantity: null , description:null}], is_shareable:0 ,post_duration:null ,open_duration:null, vote_duration:null
+      products:[{name:null , unit:null , quantity: null , description:null , image:null}], is_shareable:0 ,post_duration:null ,open_duration:null, vote_duration:null
     }),
 
   }),
@@ -30,8 +31,15 @@ export default {
       {
         this.form.post_duration = this.form.vote_duration = null;
       }
-
-      this.form.post(`/api/orders/create?save_as_draft=${save_as_draft || 0}`).then(async  ({data}) =>{
+      console.log(this.form);
+      this.form.submit('post',`/api/orders/create?save_as_draft=${save_as_draft || 0}`,{
+        transformRequest: [function (data, headers) {
+          return serialize(data , {
+            indices:true,
+            booleansAsIntegers:true
+          });
+        }]
+      }).then(async  ({data}) =>{
         this.$router.push('/orders');
       }).catch(e =>{
         console.log(e.message);

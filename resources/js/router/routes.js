@@ -21,10 +21,13 @@ export default [
   { path: '/orders/published' , name: 'published_orders' , component:page('orders/publishedOrders')},
   { path: '/orders/published/:id' , name: 'order_participate' , component:page('orders/orderParticipate')},
   { path: '/orders/:id/offers' , name:'order_offers' , component:page('orders/orderOffers')},
+  { path: '/orders/:id/invoice' , name:'order_invoice' , component:page('orders/orderInvoice')},
   { path: '/offers' , name:'my_offers' , component:page('offers/myOffers')},
   { path: '/offers/orders' , name:'facility_offers' , component:page('offers/facilityOffers')},
   { path: '/offers/create' , name:'new_offers' , component:page('offers/newOffer')},
   { path: '/offers/:id/edit' , name:'edit_offer' , component:page('offers/editOffer')},
+  { path: '/admin' , name:'admin_home' , component:page('admin/home')},
+  { path: '/admin/manage-flow' , name:'admin_manage_flow' , component:page('admin/manageFlow')},
 
   // {path: '/orr' , name:'fff' , component:page('orders/myOrders.vue')},
   {

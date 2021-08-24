@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminControllers\AdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\OAuthController;
@@ -24,13 +25,19 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::group(['middleware' => 'admin:api'],function (){
+    Route::get('admin/statistics' , [AdminController::class , 'getStatistics']);
+    Route::get('admin/users' , [AdminController::class , 'getAllUser']);
+    Route::patch('admin/users/{user}/toggle-user' , [AdminController::class , 'toggleUserActivity']);
+    Route::get('admin/orders' , [AdminController::class , 'getAllOrders']);
+    Route::get('admin/offers' , [AdminController::class , 'getAlloffers']);
+});
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout']);
 
     Route::get('user', [UserController::class, 'current']);
 
-    Route::patch('settings/profile', [ProfileController::class, 'update']);
+    Route::post('settings/profile', [ProfileController::class, 'update']);
     Route::patch('settings/password', [PasswordController::class, 'update']);
     Route::get('settings/countries' , [LocationController::class , 'listCountries']);
     Route::get('settings/cities' , [LocationController::class , 'listCitiesForCountry']);
@@ -40,7 +47,13 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('orders/myorders' , [OrdersController::class, 'getMyOrders']);
     Route::get('orders/otherorders' , [OrdersController::class, 'getOthersOrders']);
     Route::get('orders/{order}/offers' , [OrdersController::class, 'getRelatedOffers']);
-    Route::patch('orders/{order}' , [OrdersController::class , 'update'])->where('order' , '[0-9]+');
+    Route::delete('orders/withdraw/{order}' , [OrdersController::class, 'withdrawVote']);
+    Route::patch('orders/vote/{order}/{offer}' , [OrdersController::class, 'voteOnOffer']);
+    Route::post('orders/{order}/invoice' , [OrdersController::class , 'postInvoice']);
+    Route::get('orders/{order}/invoice' , [OrdersController::class , 'getInvoice']);
+    Route::post('orders/{order}/update' , [OrdersController::class , 'update'])->where('order' , '[0-9]+');
+    Route::post('orders/{order}/update' , [OrdersController::class , 'update'])->where('order' , '[0-9]+');
+    Route::patch('orders/{order}/skipstatus' , [OrdersController::class , 'skipStatus'])->where('order' , '[0-9]+');
     Route::delete('orders/{order}' , [OrdersController::class , 'destroy'])->where('order' , '[0-9]+');
     Route::get('orders/shared/{order}' , [OrdersController::class , 'participate'])->where('id' , '[0-9]+');
     Route::patch('orders/shared/{order}' , [OrdersController::class , 'storeParticipation'])->where('order' , '[0-9]+');

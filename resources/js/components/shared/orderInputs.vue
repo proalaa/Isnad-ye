@@ -18,6 +18,7 @@
                   <th>وحدة الكمية</th>
                   <th>الكمية</th>
                   <th>وصف</th>
+                  <th>صورة</th>
                   <th />
                 </tr>
                 </thead>
@@ -54,6 +55,22 @@
                   <td><input type="number" class="form-control" v-model="item.quantity"  :class="{ 'is-invalid': form.errors.has(`products.${index}.quantity`) }"></td>
                   <td><input type="text" class="form-control" v-model="item.description" :class="{ 'is-invalid': form.errors.has(`products.${index}.description`) }"></td>
                   <td>
+
+
+                    <div v-if="item.image" class="d-flex justify-content-around m-auto" style="height: 45px ; width: 100px">
+                      <img  :src="getPreviewImage(index)" style="width: 45px" class="img-fluid" alt="">
+                      <button  alt="" style="width: 40px" class="btn "><fa icon="trash-alt"/></button>
+                    </div>
+
+                    <div v-else>
+                      <button @click.prevent="openPhotoDialog(index)" class="btn btn-primary rounded-pill">
+                        <Fa icon="plus" class="ml-2" />
+                        أضافة صورة
+                      </button>
+                    </div>
+                    <input type="file"style="display: none"  accept=".jpg, .jpeg, .png" ref="photoInput" @input="storeImage(index)">
+                  </td>
+                  <td>
                   <button class="btn btn-danger rounded-pill " :style="{visibility: (form.products.length > 1 ? 'visible' :'hidden')}" @click.prevent="deleteField(item)">
                     <Fa icon="trash-alt"/>
                   </button>
@@ -67,8 +84,8 @@
               </button>
             </div>
               <div v-if="isParticipatedComponent" class="col-md" style="margin-top: 20px">
-                <button class="btn btn-success px-2 rounded" style="min-width: 100px; border-radius: 10px">حفظ ونشر</button>
-                <button class="btn btn-danger px-2" style="min-width: 100px;margin-inline-start: 15px;border-radius: 10px">الغاء</button>
+                <button class="btn btn-success px-2 rounded" @click.prevent="handleProcess" style="min-width: 100px; border-radius: 10px">حفظ ونشر</button>
+                <button class="btn btn-danger px-2" @click.prevent="goBack" style="min-width: 100px;margin-inline-start: 15px;border-radius: 10px">الغاء</button>
               </div>
             </div>
             <div class=" border-top py-4 mt-5" v-if="!isParticipatedComponent">
@@ -88,7 +105,7 @@
               <div class="col-sm-6 col-md" v-if="form.is_shareable">
                 <p>مدة المشاركة</p>
                 <div class="d-flex align-items-center" >
-                  <input type="number" min="0" :class="{ 'is-invalid': form.errors.has('post_duration') }" class="form-control ml-2" v-model="form.post_duration">
+                  <input type="number" min="0" :class="{ 'is-invalid': form.errors.has('post_duration') }" class="form-control ml-2" v-model="form.share_duration">
                   <span>ايام</span>
                 </div>
 
@@ -103,14 +120,14 @@
               <div class="col-sm-12 col-md" v-if="form.is_shareable">
                 <p>مدة التصويت</p>
                 <div class="d-flex align-items-center">
-                  <input type="number" min="0" :class="{ 'is-invalid': form.errors.has('post_duration') }" class="form-control ml-2" v-model="form.vote_duration">
+                  <input type="number" min="0" :class="{ 'is-invalid': form.errors.has('vote_duration') }" class="form-control ml-2" v-model="form.vote_duration">
                   <span>ايام</span>
                 </div>
               </div>
               <div class="col-sm-12 d-flex  col-md-3" style="margin-top: 20px">
                 <button class="btn btn-primary" :loading="form.busy" style="min-width: 100px; border-radius: 10px" @click.prevent="handleProcess(1)">حفظ كمسودة</button>
                 <button class="btn btn-success" :loading="form.busy" style="margin-inline-start: 10px ;min-width: 100px; border-radius: 10px" @click.prevent="handleProcess(0)">حفظ ونشر</button>
-                <button class="btn btn-danger px-2" type="button" style="min-width: 100px;margin-inline-start: 15px;border-radius: 10px" @click="goBack">الغاء</button>
+                <button class="btn btn-danger px-2" type="button" style="min-width: 100px;margin-inline-start: 15px;border-radius: 10px" @click.prevent="goBack">الغاء</button>
               </div>
             </div>
           </div>
@@ -126,11 +143,13 @@ import  VButton from "../Button";
 import axios from "axios";
 import Form from "vform";
 import moment from "moment"
+import Compressor from "compressorjs";
 export default {
 
   name: "orderInputs",
   components: {VButton},
   data:()=>({
+    productPreview :[],
     // form: new Form({
     //   products:[{name:null , unit:null , quantity: null , description:null}], is_shareable:0 ,post_duration:null ,open_duration:null, vote_duration:null
     // }),
@@ -147,7 +166,6 @@ export default {
       {
         id:4,name:'درزن'
       }
-
     ]
   }),
   props:{
@@ -174,6 +192,12 @@ export default {
       this.form.products.push(data);
       return false;
     },
+    getPreviewImage(index)
+    {
+      return Object.prototype.toString.call(this.form.products[index].image).slice(8, -1) == 'String'
+        ? this.getimage(this.form.products[index].image)
+        : this.productPreview[index]
+    },
     deleteField(data)
     {
       if(this.form.products.length > 1)
@@ -188,38 +212,61 @@ export default {
     {
       this.$emit('cancel')
     },
-
+    openPhotoDialog(index)
+    {
+      this.$refs.photoInput[index].click();
+    },
 
     handleProcess(save_as_draft){
+      if(!this.form.is_shareable)
+      {
+        console.log('true');
+        this.form.share_duration = null;
+        this.form.vote_duration = null;
+      }
       this.$emit('submit' , save_as_draft);
     },
-    // watch:{
-    //   'this.form.is_shareable':{
-    //     handler(){
-    //
-    //     },
-    //     deep
-    //   }
-    // }
+
+    storeImage(index) {
+      console.log('ff');
+      const file = this.$refs.photoInput[index].files[0];
+      const self = this;
+      new Compressor(file, {
+        quality: 0.6,
+
+        // The compression process is asynchronous,
+        // which means you have to access the `result` in the `success` hook function.
+        success(result) {
+          let reader = new FileReader();
+          reader.onload = function () {
+            console.log(index);
+            self.$set(self.productPreview , index , reader.result);
+          };
+          reader.readAsDataURL(result);
+          self.form.products[index].image = result;
+        },
+        error(err) {
+          console.log(err.message);
+        },
+      })
+    }
+  },
+  created() {
 
   },
-created() {
-
-
-}
-  ,
   mounted() {
-
     // console.log(this.getIndex);
-    if(this.isEditComponent)
-    {
-      let data = this.orderData.data;
-      const form1 = new Form(data);
-      this.form = {...form1};
-      this.form.post_duration =this.diffTime(data.shareable_until , data.created_at);
-      this.form.open_duration  =this.diffTime(data.open_until , data.shareable_until);
-      this.form.vote_duration =this.diffTime(data.votable_until , data.open_until);
-    }
+    // if(this.isEditComponent)
+    // {
+    //   let data = this.form.originalData;
+    //   console.log(data);
+    //   const form1 = new Form(data);
+    //   this.form = {...form1};
+    //   if(this.form.is_shareble)
+    //     this.form.post_duration =this.diffTime(data.share_end_at , data.created_at);
+    //   this.form.open_duration  =this.diffTime(data.open_until , data.share_end_at);
+    //   this.form.vote_duration =this.diffTime(data.votable_until , data.open_until);
+    // }
   }
   ,
 

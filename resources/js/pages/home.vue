@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'Home',
-  middleware: 'auth',
+  middleware: 'role:1,2',
   metaInfo () {
     return { title: this.$t('home') }
   }

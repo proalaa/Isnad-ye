@@ -20,7 +20,7 @@ export default {
       default: 'primary'
     },
     link: {
-      type:URL,
+      type:String,
       default:''
     },
     nativeType: {

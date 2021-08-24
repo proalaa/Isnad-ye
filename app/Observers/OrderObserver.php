@@ -25,7 +25,14 @@ class OrderObserver
      */
     public function updated(Order $order)
     {
-        //
+        if(!$order->is_shareable)
+        {
+            if($order->status == '1')
+            {
+                $order->update(['status' => '2']); //prevent non-Shareable Orders from getting to subscription status
+            }
+
+        }
     }
 
     /**

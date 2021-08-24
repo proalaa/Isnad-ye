@@ -14,7 +14,7 @@ class sharedOrdersResource extends JsonResource
      */
     public function toArray($request)
     {
-        $statuses = [0 => 'مغلق' , 1=>'مفتوح' , 2 => 'قيد المشاركة' , 3=>'قيد التصويت'];
+        $statuses = [0 => 'مغلق' , 1 =>'مفتوح' , 2 => 'قيد المشاركة' , 3 =>'قيد التصويت'];
 
         if(request()->exists('simple'))
         {

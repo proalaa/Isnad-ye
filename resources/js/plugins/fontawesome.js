@@ -24,7 +24,7 @@ import {
   faPen,
   faSearch,
   faBoxOpen,
-  faQuestionCircle, faCheck
+  faQuestionCircle, faCheck, faCity, faHospitalAlt, faCheckCircle
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -32,7 +32,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
-  faUser, faLock, faSignOutAlt, faCog, faGithub, faUserSecret , faEnvelope , faBell , faPlus, faPencilAlt, faTrashAlt,faChevronDown ,faHome , faIdBadge ,faShoppingCart , faBuilding,faFileUpload,faPen,faSearch,faBoxOpen,faQuestionCircle,faCheck
+  faUser, faLock, faSignOutAlt, faCog, faGithub, faUserSecret , faEnvelope , faBell , faPlus, faPencilAlt, faTrashAlt,faChevronDown ,faHome , faIdBadge ,faShoppingCart , faBuilding,faFileUpload,faPen,faSearch,faBoxOpen,faQuestionCircle,faCheck,faCity,faHospitalAlt,faCheckCircle
 )
 
 Vue.component('Fa', FontAwesomeIcon)
