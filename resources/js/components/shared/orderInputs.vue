@@ -124,7 +124,7 @@
                   <span>ايام</span>
                 </div>
               </div>
-              <div class="col-sm-12 d-flex  col-md-3" style="margin-top: 20px">
+              <div class="col-sm-12 d-flex  col-md-4" style="margin-top: 20px">
                 <button class="btn btn-primary" :loading="form.busy" style="min-width: 100px; border-radius: 10px" @click.prevent="handleProcess(1)">حفظ كمسودة</button>
                 <button class="btn btn-success" :loading="form.busy" style="margin-inline-start: 10px ;min-width: 100px; border-radius: 10px" @click.prevent="handleProcess(0)">حفظ ونشر</button>
                 <button class="btn btn-danger px-2" type="button" style="min-width: 100px;margin-inline-start: 15px;border-radius: 10px" @click.prevent="goBack">الغاء</button>

@@ -17,7 +17,7 @@
         </template>
         <template v-if="order.status == 5">
         <VButton  v-if="checkSubscriptionStatus"  type="success" :link="`/orders/${this.order.id}/invoice`" >طباعة الفاتورة</VButton>
-          <p class="text-danger">عذرا اشتراكك في الطلب تم الغاءه !!</p>
+          <p class="text-danger" v-else>عذرا اشتراكك في الطلب تم الغاءه !!</p>
         </template>
       </div>
     </card>
@@ -62,7 +62,7 @@
       <div class="mt-1 border-top pt-3">
         <div class=" d-flex font-weight-bold justify-content-around">
           <h5>الاجمالي : <span class="font-weight-bold">  {{offer.total}} ريال</span></h5>
-          <h5 class="mr-5">الحد الادنى لالغاء العرض : <span class="font-weight-bold text-danger">{{offer.min_price}} ريال</span></h5>
+<!--          <h5 class="mr-5">الحد الادنى لالغاء العرض : <span class="font-weight-bold text-danger">{{offer.min_price}} ريال</span></h5>-->
         </div>
         <hr/>
 
@@ -90,8 +90,8 @@
             </template>
           </template>
           <template v-if="order.status == 5" >
-            <h4  class="float-left text-success" v-if="offer.id === votedOffer && offer.status == 3">العرض الفائز</h4>
-            <h4 class="text-danger" v-else>عرض خاسر!!</h4>
+            <h4  class="float-left text-success" v-if="offer.id === votedOffer && offer.status == '3'">العرض الفائز</h4>
+            <h4 class="text-danger" v-if="offer.status == '0'">عرض خاسر!!</h4>
           </template>
         </div>
       </div>
@@ -120,7 +120,9 @@ export default {
   }),
   computed:{
     checkSubscriptionStatus(){
-      const subscription = this.order.facility_order.filter((x) => x.id === this.user.id);
+      const subscription = this.order.facility_order.filter((x) => {
+        return x.facility_id == this.user.id
+      })[0];
       return !!subscription.status
     }
 ,
@@ -197,6 +199,10 @@ export default {
           axios.patch(`/api/orders/${this.order.id}/skipstatus`).then((response) =>{
             console.log(response);
             this.order.status = parseInt(this.order.status) + 1;
+            if(this.order.status == 5)
+            {
+              this.fetchOffers();
+            }
           }).catch((error) =>{
           })
         }

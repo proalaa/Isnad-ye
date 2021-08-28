@@ -90,6 +90,9 @@ class OrdersController extends Controller
             }
             if($order->status == '5')
             {
+                $order->offers()->update([
+                    'status' => '3'
+                ]);
                 $this->checkUnvalidatedVoters($order);
                 dd($this->postInvoice($order));
             }
