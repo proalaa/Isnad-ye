@@ -27,6 +27,7 @@
             <Fa icon="id-badge" /><span class="align-self-start">{{$t('profile_page_title')}}</span>
           </router-link>
         </template>
+
     <!--  entity routes    -->
         <template v-if="user.role == 2">
 
@@ -44,14 +45,8 @@
         </template>
     <!--  facility routes  -->
         <template v-if="user.role == 1">
-          <a href="#offers-route-items" data-toggle="collapse" @click.prevent="" role="button" class="btn rounded-pill text-light d-flex flex-row align-items-center justify-content-start ">
-            <Fa icon="box-open"/>
-            العروض
-          </a>
-          <ul id="offers-route-items" class="collapse">
-<!--            <li class="list-unstyled"><router-link to="/offers" exact tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">عروضي</router-link></li>-->
-            <li class="list-unstyled"><router-link to="/offers/orders" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">الطلبات المتاحة</router-link></li>
-          </ul>
+            <router-link to="/offers" exact tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">  <Fa icon="box-open"/> عروضي</router-link>
+            <router-link to="/offers/orders" tag="a" role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">   <Fa icon="shopping-cart"/> الطلبات المتاحة</router-link>
         </template>
       </div>
     </div>

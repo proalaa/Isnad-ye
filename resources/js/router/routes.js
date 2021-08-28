@@ -23,6 +23,7 @@ export default [
   { path: '/orders/:id/offers' , name:'order_offers' , component:page('orders/orderOffers')},
   { path: '/orders/:id/invoice' , name:'order_invoice' , component:page('orders/orderInvoice')},
   { path: '/offers' , name:'my_offers' , component:page('offers/myOffers')},
+  { path: '/offers/:id/invoices' , name:'Offer_invoices' , component:page('offers/offerInvoices')},
   { path: '/offers/orders' , name:'facility_offers' , component:page('offers/facilityOffers')},
   { path: '/offers/create' , name:'new_offers' , component:page('offers/newOffer')},
   { path: '/offers/:id/edit' , name:'edit_offer' , component:page('offers/editOffer')},

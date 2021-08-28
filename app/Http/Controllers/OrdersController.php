@@ -7,6 +7,7 @@ use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\sharedOrdersResource;
 use App\Models\FacilityOrder;
+use App\Models\Offer;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Traits\Creator;
@@ -54,55 +55,45 @@ class OrdersController extends Controller
     }
     public function getOthersOrders()
     {
-//        $facilities = User::Facility()->with('Orders')->whereHas('Orders' ,function ($q){
-//            $q->where('is_shareable' , true);
-//        })->get();
-//        $orders = Order::with('Facilities:id')
-
-//        return Order::With('Facilities:id')->get()->each(function($order){
-//            $order->facilities->map(function($facility){
-//                $facility->products = $facility->pivot->products;
-//                unset($facility->pivot);
-//                return $facility;
-//            });
-//        });
-
-
-
        $facilities = Order::whereHas('Facilities' , function ($q){
             $q->Where('users.id'  , Auth::id());
         })->pluck('id');
        $orders = Order::with('Facilities')->where('is_shareable' , true)->whereNotIn('id',$facilities);
         return OrderResource::collection($orders->get())->response();
-
-//        $facilty_orders = DB::table('facility_order')->where('facility_id' ,'!=' ,Auth::id())->pluck('order_id');
-//         $orders = Order::whereIn('id' , $facilty_orders)->where('is_shareable' , true)->get();
-//        dd(Order::all());
-//        $attributes = Order::with('facilities')->whereHas('facilities', function ($query) {
-//            $query->where('pivot.facility_id', true);
-//        })->get();
-
         return $facilities;
-
-//        dd($attributes);
-//        return $attributes;
-//         $orders = Order::where('is_shareable' , true)->whereHas('facilities' , function ($q){
-//             return $q->where('facilities.id' , Auth::id());
-//         })->get();
-//            return $orders;
-//        return $orders;
-//        $orders = Order::with('facilities:id,name')->where('owner_id', '!=', Auth::id());
-//
-//        return OrderResource::collection($orders->get())->response();
     }
     public function skipStatus(Order $order)
     {
         try {
             $order->status =strval( $order->status + 1); ;
             $order->save();
-            if( $order->status == '5'){
-//                $this->postInvoice($order);
+
+            if(!$order->is_shareable)
+            {
+                if($order->status == '2')
+                {
+                    $this->skipStatus($order);
+                }
+
             }
+            if($order->status == '3')
+            {
+                $order->offers()->update([
+                    'status' => '1'
+                ]);
+            }
+            if($order->status == '4')
+            {
+                $order->offers()->update([
+                    'status' => '2'
+                ]);
+            }
+            if($order->status == '5')
+            {
+                $this->checkUnvalidatedVoters($order);
+                dd($this->postInvoice($order));
+            }
+
             return response()->json(['message' => 'تم تخطي هذه المرحلة بنجاح']);
         }
         catch (Exception $exception)
@@ -126,10 +117,9 @@ class OrdersController extends Controller
     public function postInvoice(Order $order){
 
         try {
-            $facilities = $order->Facilities;
-            foreach ($facilities as $facility)
+            $subscriptions = $order->offers()->where('status' , '3')->get()->pluck('voters')->first();
+            foreach ($subscriptions as $subscription)
             {
-                $subscription = $facility->pivot;
                 $subscriptionProducts = $subscription->products;
                 $offerProducts = $subscription->Offer->products;
                 $invoiceItems = array();
@@ -156,6 +146,7 @@ class OrdersController extends Controller
                 }
 
                 $supplier = $subscription->offer->supplier;
+                $facility = $subscription->Subscriber;
                 $customer = new Buyer([
                     'name'          => $facility->name,
                     'custom_fields' => [
@@ -168,19 +159,19 @@ class OrdersController extends Controller
                 ]);
                 App::setLocale('ar');
                 $invoice = new Invoice();
-                $invoice = $invoice->filename('OR_' . $order->id .'_OF_' . $subscription->voted_for . '_CL_' . $facility->id )
+                $invoice = $invoice->filename('_OF_' . $subscription->voted_for . '_CL_' . $facility->id )
                     ->buyer($customer)
                     ->seller($client)
                     ->currencyFormat('{VALUE} {SYMBOL}')
                     ->addItems($invoiceItems);
                 $invoice->save('public');
                 $subscription->update(['invoice' => $invoice->url()]);
-        }
+            }
         }
         catch (Throwable $exception){
-            return response()->json(['message' => $exception->getMessage()] , 500);
+            return  $exception->getTrace();
         }
-         return response()->json(['message' => 'تم حفظ الفاتورة بنجاح']);
+         return true;
     }
     public function getInvoice(Order $order)
     {
@@ -345,5 +336,35 @@ class OrdersController extends Controller
         $order->owner_id = $order->owner_id = Auth::user()->id;
         $order->save();
     }
-
+    private function checkUnvalidatedVoters($order)
+    {
+        foreach ($order->Offers as $offer)
+        {
+            $total = 0;
+            $products = [];
+            foreach ($offer->Voters as $voter)
+            {
+                $products = array_merge_recursive($products , $voter->products);
+            }
+            foreach ($offer->products as $offProduct)
+            {
+                foreach ($products as $subProduct) {
+                    if($subProduct->name == $offProduct['name'])
+                    {
+                        $pricePerUnit = ($offProduct['price'] / $offProduct['quantity'] );
+                        $total+= $pricePerUnit * $subProduct->quantity;
+                    }
+                }
+            }
+            if((int)$total < (int)$offer->min_price){
+                $ids = $offer->pluck('id');
+                Offer::whereIn('id' , $ids)->update([
+                    'status' => '0'
+                ]);
+                $offer->Voters()->update([
+                    'status' => '0'
+                ]);
+            }
+        }
+    }
 }

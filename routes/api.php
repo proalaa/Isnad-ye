@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::group(['middleware' => 'admin:api'],function (){
     Route::get('admin/statistics' , [AdminController::class , 'getStatistics']);
     Route::get('admin/users' , [AdminController::class , 'getAllUser']);
@@ -36,20 +37,20 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout']);
 
     Route::get('user', [UserController::class, 'current']);
-
+    Route::get('offers/{offer}/invoices' , [OffersController::class , 'getInvoices'])->where('offer' , '[0-9]+');;
     Route::post('settings/profile', [ProfileController::class, 'update']);
     Route::patch('settings/password', [PasswordController::class, 'update']);
     Route::get('settings/countries' , [LocationController::class , 'listCountries']);
     Route::get('settings/cities' , [LocationController::class , 'listCitiesForCountry']);
     Route::post('orders/create' , [OrdersController::class, 'store']);
     Route::get('orders/{order}' , [OrdersController::class , 'edit'])->where('order' , '[0-9]+');;
-    Route::put('orders/{order}/publish' , [OrdersController::class , 'publishOrder'])->where('order' , '[0-9]+');;
+    Route::put('orders/{order}/publish' , [OrdersController::class , 'publishOrder'])->where('order' , '[0-9]+');
     Route::get('orders/myorders' , [OrdersController::class, 'getMyOrders']);
     Route::get('orders/otherorders' , [OrdersController::class, 'getOthersOrders']);
     Route::get('orders/{order}/offers' , [OrdersController::class, 'getRelatedOffers']);
     Route::delete('orders/withdraw/{order}' , [OrdersController::class, 'withdrawVote']);
     Route::patch('orders/vote/{order}/{offer}' , [OrdersController::class, 'voteOnOffer']);
-    Route::post('orders/{order}/invoice' , [OrdersController::class , 'postInvoice']);
+//    Route::post('orders/{order}/invoice' , [OrdersController::class , 'postInvoice']);
     Route::get('orders/{order}/invoice' , [OrdersController::class , 'getInvoice']);
     Route::post('orders/{order}/update' , [OrdersController::class , 'update'])->where('order' , '[0-9]+');
     Route::post('orders/{order}/update' , [OrdersController::class , 'update'])->where('order' , '[0-9]+');
@@ -59,6 +60,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::patch('orders/shared/{order}' , [OrdersController::class , 'storeParticipation'])->where('order' , '[0-9]+');
     Route::get('orders/published' , [OffersController::class , 'getPublishedOrders'] );
     Route::resource('offers' , OffersController::class);
+
+
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

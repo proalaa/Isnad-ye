@@ -14,7 +14,7 @@
       <template v-for="item in items">
 
         <tr :key="item.id" class="text-center mt-3 item-header"  >
-          <td scope="row" v-for="(t, key) in item" v-if="key != 'is_shareable' && key != 'products' && key != 'more' && key!='share_end_at' && key!='offering_end_at' && key!='vote_end_at'">
+          <td scope="row" v-for="(t, key) in item" :key="key" v-if="key != 'is_shareable' && key != 'products' && key != 'more' && key!='share_end_at' && key!='offering_end_at' && key!='vote_end_at'&& key!='owner_id'">
             {{ t != null? t : 'لايوجد' }}
 
           </td>
@@ -25,6 +25,9 @@
             <div v-if="!isForParticipate">
               <div class="" v-if="item.status == 'مفتوح' || item.status == 'قيد التصويت'">
                 <v-button :link="'/orders/' + item.id + '/offers'" type="info">مشاهدة العروض</v-button>
+              </div>
+              <div class="" v-if="item.status == 'قيد المشاركة' && isOwner(item) ">
+                <button class="btn btn-primary" @click="skipStatus(item)">تخطي مرحلة المشاركة</button>
               </div>
               <div class="" v-if="item.status == 'اكتمال'">
                 <v-button :link="'/orders/' + item.id + '/offers'" type="success">تفاصيل</v-button>
@@ -119,6 +122,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import moment from "moment";
 import NoItems from "./noItems";
+import {mapGetters} from "vuex";
 export default {
   name: "isnadTable",
   components: {NoItems, VButton, IsnadButton},
@@ -138,7 +142,9 @@ export default {
 
   },
   computed:{
-
+    ...mapGetters({
+      user: 'auth/user'
+    }),
     },
   mounted() {
   },
@@ -150,6 +156,12 @@ export default {
       moment.locale('ar');
       return moment(date).fromNow();
     },
+    isOwner(item)
+    {
+      console.log(item);
+      return  item.owner_id == this.user.id;
+    }
+    ,
     deleteOrder(item) {
       if (!item) {
         return;
@@ -197,6 +209,26 @@ export default {
         })
       }).catch(e =>{
         console.log(e.message());
+      })
+    },
+    skipStatus(item) {
+      console.log(item);
+      Swal.fire({
+        title:'لازال هناك وقت!',
+        text:'هل انت متاكد',
+        icon:'warning',
+        showCancelButton: true,
+        confirmButtonColor: `var(--primary)`,
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'تخطي',
+        cancelButtonText: 'إلغاء'
+      }).then((result)=>{
+        if(result.isConfirmed)
+        {
+          axios.patch(`/api/orders/${item.id}/skipstatus`).then((response) =>{
+            this.item.status = 'مفتوح';
+          })
+        }
       })
     }
   }}

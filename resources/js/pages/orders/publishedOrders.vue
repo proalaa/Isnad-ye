@@ -87,26 +87,7 @@
                   </div>
                 </div>
 
-<!--                <div class="text-right details-content card collapse" :id="'itemDetails' + item.id">-->
-<!--                  <table class="table table-borderless w-100">-->
-<!--                    <thead>-->
-<!--                    <th>رقم</th>-->
-<!--                    <th>الصنف</th>-->
-<!--                    <th>وحدة الكمية</th>-->
-<!--                    <th>الكمية</th>-->
-<!--                    <th>وصف</th>-->
-<!--                    </thead>-->
-<!--                    <tbody>-->
-<!--                    <tr class="text-center" v-for=" (product, index) in item.products" :key="index">-->
-<!--                      <td>{{index+1}}</td>-->
-<!--                      <td>{{product.name}}</td>-->
-<!--                      <td>{{product.unit}}</td>-->
-<!--                      <td>{{product.quantity}}</td>-->
-<!--                      <td >{{product.description}}</td>-->
-<!--                    </tr>-->
-<!--                    </tbody>-->
-<!--                  </table>-->
-<!--                </div>-->
+
               </td>
             </tr>
 

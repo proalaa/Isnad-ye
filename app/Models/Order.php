@@ -24,10 +24,8 @@ class Order extends Model
     ];
 
     public function getShareEndAtAttribute(){
-//        return  $this->posted_at;
         if($this->is_shareable)
-//            return Carbon::parse($this->posted_at)->addDays($this->share_duration)->format('Y-m-d H:i:s');
-            return "2021-08-21 08:11:40";
+            return Carbon::parse($this->posted_at)->addDays($this->share_duration)->format('Y-m-d H:i:s');
     }
     public function getOfferingEndAtAttribute(){
         return  Carbon::parse($this->posted_at)->addDays($this->share_duration ?? 0)->addDays($this->open_duration)->format('Y-m-d H:i:s');

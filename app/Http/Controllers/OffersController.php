@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OfferRequest;
+use App\Http\Resources\OfferCollection;
+use App\Http\Resources\OfferResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Offer;
 use App\Models\Order;
@@ -10,7 +12,12 @@ use Carbon\Carbon;
 use Carbon\Traits\Creator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use LaravelDaily\Invoices\Classes\Buyer;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
+use LaravelDaily\Invoices\Classes\Party;
+use LaravelDaily\Invoices\Invoice;
 use Throwable;
 use function request as request;
 
@@ -23,7 +30,9 @@ class OffersController extends Controller
      */
     public function index()
     {
-        //
+        $offers = Auth::user()->Offers()->get();
+        return OfferResource::collection($offers);
+
     }
     public function getPublishedOrders()
     {
@@ -32,7 +41,10 @@ class OffersController extends Controller
 
         return OrderResource::collection($orders);
     }
-
+    public function getInvoices(Offer $offer)
+    {
+        return $offer->Voters()->pluck('invoice');
+    }
     /**
      * Show the form for creating a new resource.
      *

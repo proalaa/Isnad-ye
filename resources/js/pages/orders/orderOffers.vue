@@ -15,10 +15,10 @@
         </template>
         <template v-if="order.is_shareable">
         </template>
-
-
-
-        <VButton v-if="order.status == 5" type="success" :link="`/orders/${this.order.id}/invoice`" >طباعة الفاتورة</VButton>
+        <template v-if="order.status == 5">
+        <VButton  v-if="checkSubscriptionStatus"  type="success" :link="`/orders/${this.order.id}/invoice`" >طباعة الفاتورة</VButton>
+          <p class="text-danger">عذرا اشتراكك في الطلب تم الغاءه !!</p>
+        </template>
       </div>
     </card>
     <card :title="'عرض رقم ('+ offer.id+') على طلب <..>'" v-for="offer in order.offers" :key="offer.id" class="my-4">
@@ -90,7 +90,8 @@
             </template>
           </template>
           <template v-if="order.status == 5" >
-            <h4 class="float-left text-success">العرض الفائز</h4>
+            <h4  class="float-left text-success" v-if="offer.id === votedOffer && offer.status == 3">العرض الفائز</h4>
+            <h4 class="text-danger" v-else>عرض خاسر!!</h4>
           </template>
         </div>
       </div>
@@ -118,7 +119,11 @@ export default {
     ]
   }),
   computed:{
-
+    checkSubscriptionStatus(){
+      const subscription = this.order.facility_order.filter((x) => x.id === this.user.id);
+      return !!subscription.status
+    }
+,
     offerTotalPrice(){
       const total = this.order.offers.reduce((sum , offer) => sum + offer.totalPrice);
       return total;
@@ -192,12 +197,7 @@ export default {
           axios.patch(`/api/orders/${this.order.id}/skipstatus`).then((response) =>{
             console.log(response);
             this.order.status = parseInt(this.order.status) + 1;
-            if(this.order.status == 5)
-            {
-              axios.post(`/api/orders/${this.order.id}/invoice`).then((response) =>{
-                console.log(response);
-              });
-            }
+          }).catch((error) =>{
           })
         }
       })

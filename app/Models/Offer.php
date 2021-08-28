@@ -9,15 +9,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Offer extends Model
 {
     use HasFactory , SoftDeletes;
-
+    protected $guarded = [];
     protected $casts=[
         'products' => 'array'
     ];
+    protected $dates = ['created_at'];
 
     public function Supplier()
     {
         return $this->belongsTo(User::class);
     }
+
     public function Order()
     {
         return $this->belongsTo(Order::class);

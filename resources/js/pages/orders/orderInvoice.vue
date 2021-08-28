@@ -5,14 +5,10 @@
 </template>
 
 <script>
-import pdf from 'vue-pdf'
 import axios from "axios";
 
 export default {
   name: "orderInvoice",
-  components:{
-    pdf
-  },
   data:()=>({
     invoice:''
   }),
