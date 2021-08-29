@@ -134,14 +134,13 @@ export default {
     user: 'auth/user'
   })},
   methods:{
-     update () {
-      const { data } =  this.form.submit('post','/api/settings/profile',{
+     async update () {
+      const {data} = await this.form.submit('post','/api/settings/profile',{
         transformRequest: [function (data, headers) {
           return serialize(data);
         }]
       });
-
-       // this.$store.dispatch('auth/updateUser', { user: data })
+       this.$store.dispatch('auth/updateUser', { user: data })
     },
     async fetchCountries(){
       const {data} = await axios.get('/api/settings/countries');

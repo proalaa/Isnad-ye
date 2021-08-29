@@ -21,9 +21,9 @@
           <template v-for="order in publishedOrders" >
             <tr class="text-center mt-3 item-header"  :key="order" >
             <td>{{ order.id }}</td>
-            <td>{{ order.shareable_until }}</td>
-            <td>{{ order.open_until }}</td>
-            <td>{{ order.votable_until }}</td>
+            <td>{{ getDiffFromNow(order.posted_at) }}</td>
+            <td>{{ getDiffFromNow(order.share_end_at) }}</td>
+            <td>{{ getDiffFromNow(order.offering_end_at) }}</td>
             <td>{{ order.participant_count }}</td>
 
               <td class="d-flex justify-content-center align-items-center">
@@ -112,6 +112,7 @@ import ClassificationBar from "../../components/shared/ClassificationBar";
 import axios from "axios";
 import VButton from "../../components/Button";
 import NoItems from "../../components/shared/noItems";
+import moment from "moment";
 export default {
   name: "publishedOrders",
   components: {NoItems, VButton, ClassificationBar, IsnadTable},
@@ -127,7 +128,11 @@ export default {
       const {data} = await axios.get(`/api/orders/otherorders`);
       console.log(data);
       this.publishedOrders = data;
-    }
+    },
+    getDiffFromNow(date){
+      moment.locale(this.$i18n.locale);
+      return moment(date).fromNow();
+    },
   },
   created() {
     this.fetchOrders();

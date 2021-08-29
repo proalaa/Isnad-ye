@@ -1,15 +1,24 @@
 <template>
   <transition name="slide">
     <div v-if="isSidebarOpen" id="sidebar">
-      <div class="top-side">
-        <div class="container" />
+      <button class="d-inline-block exit-sidebar d-lg-none bg-primary text-light m-3 border-0" style="font-size: 20px" @click="closeSidebar">
+        &times;
+      </button>
+      <div class="top-side p-5">
+
+        <div class="container text-center">
+          <div class="profile" style="width: 100%" >
+            <img :src="getimage(user.profile_image)" alt="profile" class="img-fluid text-center rounded-circle text-center" style="width: 120px;height: 120px">
+            <p class="text-center mt-3" style="font-weight: 600;color: white; font-size: 20px ; word-break: break-word">{{user.name}}</p>
+          </div>
+        </div>
       </div>
 
-      <div>
-        <button class="d-inline-block exit-sidebar d-lg-none bg-primary text-light" @click="closeSidebar">
-          &times;
-        </button>
+      <div style="margin-top: 150px">
+        <hr>
+
     <!--  admin routes     -->
+
         <template v-if="user.role == 0">
           <router-link to="/admin" tag="a" exact role="button" class="btn  rounded-pill text-light d-flex flex-row align-items-center justify-content-start">
             <Fa icon="home" /><span class="align-self-start">{{ $t('home_page_title') }}</span>
