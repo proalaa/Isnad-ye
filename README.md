@@ -1,76 +1,59 @@
-# Isnaad Project 
+# ⚡ Isnaad – Smart Medical Procurement Platform
 
+**Isnaad** is a modern web application that bridges **hospitals, clinics, and medical centers** with **trusted medical equipment suppliers**.  
+It enables healthcare providers to **collaborate on group purchases** and allows suppliers to **compete through transparent bidding**, making procurement faster, easier, and more cost-effective.  
 
-> Isnaad Project.
+---
 
+## 🚀 Key Features
 
-## Features
+- **Modern Tech Stack:** Laravel 8, Vue, Vue Router, Vuex, Vue I18n, ESLint  
+- **Dynamic Pages & Layouts:** Custom page layouts with dynamic imports  
+- **User Authentication:** JWT-based login, registration, email verification, and password reset  
+- **Social Login:** Integrated with Laravel Socialite  
+- **UI & Icons:** Bootstrap 4 + Font Awesome 5 for a sleek interface  
 
-- Laravel 8
-- Vue + VueRouter + Vuex + VueI18n + ESlint
-- Pages with dynamic import and custom layouts
-- Login, register, email verification and password reset
-- Authentication with JWT
-- Socialite integration
-- Bootstrap 4 + Font Awesome 5
+---
 
-## Installation
-1-download the project
--  open any termainal you have ex:(cmd , gitbash , powershell)
-- `git clone https://github.com/proalaa/Isnad-ye.git`
--  go to project directory -> `cd Isnad-ye`
+## 📦 Installation
 
-2- follow these steps after the project is downloaded
-- `composer install`
-- `cp .env.example .env`
-- Edit `.env` and set your database connection details
-- `php artisan key:generate` and `php artisan jwt:secret`
-- `php artisan migrate`
-- `npm install`
-
-## Usage 
-
-#### Development
-
+1. **Clone the Repository**
 ```bash
-# Build and watch
-npm run watch
-
+git clone https://github.com/proalaa/Isnad-ye.git
+cd Isnad-ye
 ```
 
-[comment]: <> (#### Production)
-
-[comment]: <> (```bash)
-
-[comment]: <> (npm run production)
-
-[comment]: <> (```)
-
-<!-- ## Socialite
-
-This project comes with GitHub as an example for [Laravel Socialite](https://laravel.com/docs/5.8/socialite).
-
-To enable the provider create a new GitHub application and use `https://example.com/api/oauth/github/callback` as the Authorization callback URL.
-
-Edit `.env` and set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` with the keys form your GitHub application.
-
-For other providers you may need to set the appropriate keys in `config/services.php` and redirect url in `OAuthController.php`.
-
-## Email Verification
-
-To enable email verification make sure that your `App\User` model implements the `Illuminate\Contracts\Auth\MustVerifyEmail` contract.
-
-## Testing
-
+2. **Backend Setup**
 ```bash
-# Run unit and feature tests
-vendor/bin/phpunit
+composer install
+cp .env.example .env
+```
+- Update `.env` with your database credentials  
+```bash
+php artisan key:generate
+php artisan jwt:secret
+php artisan migrate
+```
 
+3. **Frontend Setup**
+```bash
+npm install
+```
 
-## Changelog
+---
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently. -->
+## 💻 Usage
 
-## Contributors
-- [**Aladdin Mohammed** - *The main maintainer of this project*](https://github.com/proalaa)
+### Development Mode
+```bash
+npm run watch
+```
 
+---
+
+## 👨‍💻 Contributors
+- [**Aladdin Mohammed**](https://github.com/proalaa) – *Creator & Main Maintainer*
+
+---
+
+> ⚡ **Tip:** Want to contribute? Fork the repo, create your branch, and send a pull request. Let’s make medical procurement smarter together.
